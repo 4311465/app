@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="zjq.Views.SelfRescuerListPage"
+             Title="自救器列表">
+
+    <StackLayout Padding="10">
+        <SearchBar x:Name="SearchBar" 
+                   Placeholder="搜索自救器..." 
+                   Text="{Binding SearchText}"
+                   Margin="0,10,0,0" />
+        
+        <RefreshView Command="{Binding RefreshSelfRescuersCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+            <ListView x:Name="SelfRescuerListView" 
+                      ItemsSource="{Binding SelfRescuers}"
+                      SelectedItem="{Binding SelectedSelfRescuer, Mode=TwoWay}"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10" BackgroundColor="{Binding StatusColor}">
+                                <Label Text="{Binding SerialNumber}" FontAttributes="Bold" />
+                                <Label Text="{Binding Model}" FontSize="14" />
+                                <Label Text="{Binding Location}" FontSize="14" />
+                                <Label Text="{Binding StatusName}" FontSize="14" FontAttributes="Italic" />
+                                <Label Text="{Binding ExpiryDateText}" FontSize="12" TextColor="Gray" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </RefreshView>
+        
+        <Button Text="添加自救器" 
+                Command="{Binding AddSelfRescuerCommand}"
+                Margin="0,10,0,0" />
+    </StackLayout>
+
+</ContentPage>

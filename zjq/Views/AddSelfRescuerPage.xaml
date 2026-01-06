@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="zjq.Views.AddSelfRescuerPage"
+             Title="添加自救器">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            <Entry x:Name="SerialNumberEntry" 
+                   Placeholder="序列号" 
+                   Keyboard="Text"
+                   Text="{Binding SerialNumber}" />
+            
+            <Entry x:Name="ModelEntry" 
+                   Placeholder="型号" 
+                   Keyboard="Text"
+                   Text="{Binding Model}" />
+            
+            <Entry x:Name="ManufacturerEntry" 
+                   Placeholder="制造商" 
+                   Keyboard="Text"
+                   Text="{Binding Manufacturer}" />
+            
+            <Label Text="生产日期" FontAttributes="Bold" />
+            <DatePicker x:Name="ManufactureDatePicker"
+                        Date="{Binding ManufactureDate}" />
+            
+            <Label Text="过期日期" FontAttributes="Bold" />
+            <DatePicker x:Name="ExpiryDatePicker"
+                        Date="{Binding ExpiryDate}" />
+            
+            <Picker x:Name="StatusPicker" 
+                    Title="状态"
+                    ItemsSource="{Binding StatusTypes}"
+                    SelectedItem="{Binding SelectedStatus}"
+                    ItemDisplayBinding="{Binding Name}" />
+            
+            <Entry x:Name="LocationEntry" 
+                   Placeholder="存放位置" 
+                   Keyboard="Text"
+                   Text="{Binding Location}" />
+            
+            <Editor x:Name="NotesEditor" 
+                    Placeholder="备注" 
+                    HeightRequest="100"
+                    Text="{Binding Notes}" />
+            
+            <Button Text="保存" 
+                    Command="{Binding SaveCommand}" 
+                    Margin="0,20,0,0" />
+            
+            <Button Text="取消" 
+                    Command="{Binding CancelCommand}" />
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>
