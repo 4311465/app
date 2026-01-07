@@ -161,6 +161,75 @@ namespace zjq.Repositories
             return null;
         }
 
+        public async Task<List<SelfRescuer>> GetByUrlAsync(string url)
+        {
+            var rescuers = new List<SelfRescuer>();
+            try
+            {
+                using var connection = _dbService.GetConnection();
+                await connection.OpenAsync();
+
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT * FROM SelfRescuers WHERE SelfRescueUrl = @Url";
+                command.Parameters.AddWithValue("@Url", url);
+
+                using var reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    try
+                    {
+                        rescuers.Add(new SelfRescuer
+                        {
+                            Id = reader.GetInt32(0),
+                            SelfRescueId = reader.GetString(1),
+                            CreateTime = reader.IsDBNull(2) ? DateTime.Now : DateTime.Parse(reader.GetString(2)),
+                            CheckTime = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3)),
+                            VerifyResult = reader.IsDBNull(4) ? null : (byte?)reader.GetInt32(4),
+                            Temp = reader.IsDBNull(5) ? null : (float?)reader.GetDouble(5),
+                            Hs = reader.IsDBNull(6) ? null : (float?)reader.GetDouble(6),
+                            SelfRescueInfo = reader.GetString(7),
+                            SelfRescueUrl = reader.GetString(8),
+                            SelfRescueModel = reader.GetString(9),
+                            SelfRescueSafeCode = reader.GetString(10),
+                            SelfRescueName = reader.GetString(11),
+                            SelfRescueIsValid = reader.GetString(12),
+                            SelfRescueCompany = reader.GetString(13),
+                            SelfRescueValidDate = reader.GetString(14),
+                            SelfRescueValidStart = reader.IsDBNull(15) ? null : DateTime.Parse(reader.GetString(15)),
+                            SelfRescueValidEnd = reader.IsDBNull(16) ? null : DateTime.Parse(reader.GetString(16)),
+                            ProcessingStatus = reader.IsDBNull(17) ? null : (byte?)reader.GetInt32(17),
+                            ProcessingCount = reader.IsDBNull(18) ? null : reader.GetInt32(18),
+                            EmployeeId = reader.IsDBNull(19) ? null : reader.GetInt32(19),
+                            DeviceType = reader.IsDBNull(20) ? 0 : reader.GetInt32(20),
+                            InspectorName = reader.IsDBNull(21) ? null : reader.GetString(21),
+                            PositivePressure = reader.IsDBNull(22) ? null : (float?)reader.GetDouble(22),
+                            PositivePressureTime = reader.IsDBNull(23) ? null : DateTime.Parse(reader.GetString(23)),
+                            NegativePressure = reader.IsDBNull(24) ? null : (float?)reader.GetDouble(24),
+                            NegativePressureTime = reader.IsDBNull(25) ? null : DateTime.Parse(reader.GetString(25)),
+                            ExhaustPressure = reader.IsDBNull(26) ? null : (float?)reader.GetDouble(26),
+                            ExhaustPressureTime = reader.IsDBNull(27) ? null : DateTime.Parse(reader.GetString(27)),
+                            QuantitativeOxygen = reader.IsDBNull(28) ? null : (float?)reader.GetDouble(28),
+                            QuantitativeOxygenTime = reader.IsDBNull(29) ? null : DateTime.Parse(reader.GetString(29)),
+                            ManualOxygen = reader.IsDBNull(30) ? null : (float?)reader.GetDouble(30),
+                            ManualOxygenTime = reader.IsDBNull(31) ? null : DateTime.Parse(reader.GetString(31))
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the error and continue processing other records
+                        System.Diagnostics.Debug.WriteLine($"Error parsing self-rescuer record: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an empty list
+                System.Diagnostics.Debug.WriteLine($"Error getting self-rescuers by URL: {ex.Message}");
+            }
+
+            return rescuers;
+        }
+
         public int Add(SelfRescuer rescuer)
         {
             return AddAsync(rescuer).Result;

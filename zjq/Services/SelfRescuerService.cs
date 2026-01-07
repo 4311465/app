@@ -434,6 +434,20 @@ namespace zjq.Services
             }
         }
 
+        // 根据URL获取自救器
+        public async Task<List<SelfRescuer>> GetSelfRescuersByUrlAsync(string url)
+        {
+            try
+            {
+                return await _selfRescuerRepo.GetByUrlAsync(url);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting self rescuers by URL: {ex.Message}");
+                return new List<SelfRescuer>();
+            }
+        }
+
         // 检查过期的自救器
         public List<SelfRescuer> GetExpiredSelfRescuers()
         {

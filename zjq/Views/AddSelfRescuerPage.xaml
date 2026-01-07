@@ -6,48 +6,72 @@
 
     <ScrollView>
         <StackLayout Padding="20" Spacing="15">
-            <Entry x:Name="SerialNumberEntry" 
-                   Placeholder="序列号" 
+            <Entry x:Name="SelfRescueIdEntry" 
+                   Placeholder="出厂编号" 
                    Keyboard="Text"
-                   Text="{Binding SerialNumber}" />
+                   Text="{Binding SelfRescueId}" />
             
             <Button Text="扫码" 
                     Command="{Binding ScanQRCodeCommand}" 
                     Margin="0,5,0,15" />
             
-            <Entry x:Name="ModelEntry" 
-                   Placeholder="型号" 
+            <Entry x:Name="SelfRescueModelEntry" 
+                   Placeholder="自救器类型" 
                    Keyboard="Text"
-                   Text="{Binding Model}" />
+                   Text="{Binding SelfRescueModel}" />
             
-            <Entry x:Name="ManufacturerEntry" 
-                   Placeholder="制造商" 
+            <Entry x:Name="SelfRescueCompanyEntry" 
+                   Placeholder="生产厂家" 
                    Keyboard="Text"
-                   Text="{Binding Manufacturer}" />
+                   Text="{Binding SelfRescueCompany}" />
             
-            <Label Text="生产日期" FontAttributes="Bold" />
-            <DatePicker x:Name="ManufactureDatePicker"
-                        Date="{Binding ManufactureDate}" />
-            
-            <Label Text="过期日期" FontAttributes="Bold" />
-            <DatePicker x:Name="ExpiryDatePicker"
-                        Date="{Binding ExpiryDate}" />
-            
-            <Picker x:Name="StatusPicker" 
-                    Title="状态"
-                    ItemsSource="{Binding StatusTypes}"
-                    SelectedItem="{Binding SelectedStatus}"
-                    ItemDisplayBinding="{Binding Name}" />
-            
-            <Entry x:Name="LocationEntry" 
-                   Placeholder="存放位置" 
+            <Entry x:Name="SelfRescueNameEntry" 
+                   Placeholder="自救器名称" 
                    Keyboard="Text"
-                   Text="{Binding Location}" />
+                   Text="{Binding SelfRescueName}" />
             
-            <Editor x:Name="NotesEditor" 
-                    Placeholder="备注" 
-                    HeightRequest="100"
-                    Text="{Binding Notes}" />
+            <Entry x:Name="SelfRescueSafeCodeEntry" 
+                   Placeholder="安标" 
+                   Keyboard="Text"
+                   Text="{Binding SelfRescueSafeCode}" />
+            
+            <Entry x:Name="SelfRescueValidDateEntry" 
+                   Placeholder="有效时间范围" 
+                   Keyboard="Text"
+                   Text="{Binding SelfRescueValidDate}" />
+            
+            <Label Text="有效期开始" FontAttributes="Bold" />
+            <DatePicker x:Name="SelfRescueValidStartPicker"
+                        Date="{Binding SelfRescueValidStart, Mode=TwoWay}" />
+            
+            <Label Text="有效期结束" FontAttributes="Bold" />
+            <DatePicker x:Name="SelfRescueValidEndPicker"
+                        Date="{Binding SelfRescueValidEnd, Mode=TwoWay}" />
+            
+            <Entry x:Name="SelfRescueInfoEntry" 
+                   Placeholder="自救器信息" 
+                   Keyboard="Text"
+                   Text="{Binding SelfRescueInfo}" />
+            
+            <Entry x:Name="SelfRescueUrlEntry" 
+                   Placeholder="扫码URL" 
+                   Keyboard="Text"
+                   Text="{Binding SelfRescueUrl}" />
+            
+            <Entry x:Name="SelfRescueIsValidEntry" 
+                   Placeholder="有效性" 
+                   Keyboard="Text"
+                   Text="{Binding SelfRescueIsValid}" />
+            
+            <Label Text="设备类型" FontAttributes="Bold" />
+            <Picker x:Name="DeviceTypePicker" 
+                    Title="选择设备类型"
+                    SelectedIndex="{Binding DeviceType}">
+                <Picker.Items>
+                    <x:String>化学氧</x:String>
+                    <x:String>压缩氧</x:String>
+                </Picker.Items>
+            </Picker>
             
             <Button Text="保存" 
                     Command="{Binding SaveCommand}" 
