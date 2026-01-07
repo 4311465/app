@@ -15,7 +15,7 @@ namespace zjq.Views
             
             cameraBarcodeReaderView.Options = new BarcodeReaderOptions
             {
-                Formats = BarcodeFormats.OneDimensional,
+                Formats = BarcodeFormats.All,
                 AutoRotate = true,
                 Multiple = false
             };
