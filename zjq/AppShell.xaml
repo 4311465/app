@@ -17,6 +17,11 @@
             Icon="dotnet_bot.png"
             ContentTemplate="{DataTemplate local:SelfRescuerListPage}"
             Route="SelfRescuerListPage" />
+             <ShellContent
+            Title="统计"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate local:StatisticsPage}"
+            Route="StatisticsPage" />
     </TabBar>
 
     <ShellContent

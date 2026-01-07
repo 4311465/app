@@ -11,6 +11,10 @@
                    Keyboard="Text"
                    Text="{Binding SerialNumber}" />
             
+            <Button Text="扫码" 
+                    Command="{Binding ScanQRCodeCommand}" 
+                    Margin="0,5,0,15" />
+            
             <Entry x:Name="ModelEntry" 
                    Placeholder="型号" 
                    Keyboard="Text"

@@ -2,6 +2,8 @@ using Microsoft.Extensions.Logging;
 using zjq.Services;
 using zjq.Repositories;
 using zjq.ViewModels;
+using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 
 namespace zjq
 {
@@ -12,6 +14,7 @@ namespace zjq
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseBarcodeReader()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
