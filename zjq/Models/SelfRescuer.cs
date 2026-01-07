@@ -137,30 +137,12 @@ namespace zjq.Models
         /// </summary>
         public int DeviceType { get; set; } = 0;
 
-        /// <summary>
-        /// 状态ID
-        /// </summary>
-        public int StatusId { get; set; } = 1; // 默认状态为正常
+    
 
-        /// <summary>
-        /// 序列号
-        /// </summary>
-        public string SerialNumber { get; set; } = null!;
+    
 
-        /// <summary>
-        /// 型号
-        /// </summary>
-        public string Model { get; set; } = null!;
+    
 
-        /// <summary>
-        /// 位置
-        /// </summary>
-        public string Location { get; set; } = null!;
-
-        /// <summary>
-        /// 过期日期
-        /// </summary>
-        public DateTime ExpiryDate { get; set; }
 
 
         /// <summary>

@@ -95,7 +95,30 @@ namespace zjq.ViewModels
                     string message = $"发现 {expiredRescuers.Count} 个过期自救器:\n";
                     foreach (var rescuer in expiredRescuers)
                     {
-                        message += $"- {rescuer.SerialNumber} (过期日期: {rescuer.ExpiryDate.ToString("yyyy-MM-dd")})\n";
+                        string expiryDateText = "未过期";
+                        if (rescuer.SelfRescueValidEnd.HasValue)
+                        {
+                            expiryDateText = rescuer.SelfRescueValidEnd.Value.ToString("yyyy-MM-dd");
+                        }
+                        else if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
+                        {
+                            try
+                            {
+                                string dateStr = rescuer.SelfRescueId.Substring(0, 8);
+                                if (System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                                {
+                                    if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                                    {
+                                        expiryDateText = parsedDate.AddYears(3).ToString("yyyy-MM-dd");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // 解析失败，保持默认值
+                            }
+                        }
+                        message += $"- {rescuer.SelfRescueId} (过期日期: {expiryDateText})\n";
                     }
                     await App.Current.MainPage.DisplayAlert("过期检查", message, "确定");
                 }
@@ -127,7 +150,7 @@ namespace zjq.ViewModels
                     string message = $"发现 {maintenanceRescuers.Count} 个需要维护的自救器:\n";
                     foreach (var rescuer in maintenanceRescuers)
                     {
-                        message += $"- {rescuer.SerialNumber} (位置: {rescuer.Location})\n";
+                        message += $"- {rescuer.SelfRescueId} (上次维护日期: {rescuer.CheckTime?.ToString("yyyy-MM-dd") ?? "未检查"})\n";
                     }
                     await App.Current.MainPage.DisplayAlert("维护提醒", message, "确定");
                 }

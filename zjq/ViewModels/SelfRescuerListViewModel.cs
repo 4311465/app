@@ -39,18 +39,61 @@ namespace zjq.ViewModels
                 {
                     try
                     {
-                        var statusName = await _selfRescuerService.GetStatusNameAsync(r.StatusId);
+                        // 确定状态名称
+                        string statusName = "正常";
+                        
+                        // 检查是否过期
+                        if (r.SelfRescueValidEnd.HasValue && r.SelfRescueValidEnd.Value < DateTime.Now)
+                        {
+                            statusName = "过期";
+                        }
+                        // 检查是否临期
+                        else if (r.CheckTime.HasValue)
+                        {
+                            var currentDate = DateTime.Now;
+                            if ((r.DeviceType == 1 && r.CheckTime.Value.AddDays(160) <= currentDate && r.CheckTime.Value.AddDays(180) >= currentDate) ||
+                                (r.DeviceType == 0 && r.CheckTime.Value.AddDays(80) <= currentDate && r.CheckTime.Value.AddDays(90) >= currentDate))
+                            {
+                                statusName = "临期";
+                            }
+                        }
+                        
+                        // 计算过期日期
+                        DateTime expiryDate = DateTime.Now.AddYears(3);
+                        if (r.SelfRescueValidEnd.HasValue)
+                        {
+                            expiryDate = r.SelfRescueValidEnd.Value;
+                        }
+                        else if (!string.IsNullOrWhiteSpace(r.SelfRescueId) && r.SelfRescueId.Length >= 8)
+                        {
+                            try
+                            {
+                                string dateStr = r.SelfRescueId.Substring(0, 8);
+                                if (System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                                {
+                                    if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                                    {
+                                        expiryDate = parsedDate.AddYears(3);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                // 解析失败，保持默认值
+                            }
+                        }
+                        
                         rescuerViewModels.Add(new SelfRescuerItemViewModel
                         {
                             Id = r.Id,
-                            SerialNumber = r.SerialNumber,
-                            Model = r.Model,
-                            Location = r.Location,
-                            StatusId = r.StatusId,
+                            SerialNumber = r.SelfRescueId,
+                            Model = r.SelfRescueModel,
+                            Location = r.SelfRescueCompany, // 使用厂家作为临时位置信息
+                            StatusId = 1, // 默认状态为正常
                             StatusName = statusName,
-                            ExpiryDate = r.ExpiryDate,
-                            ExpiryDateText = $"过期日期: {r.ExpiryDate.ToString("yyyy-MM-dd")}",
-                            StatusColor = GetStatusColor(r.StatusId)
+                            ExpiryDate = expiryDate,
+                            ExpiryDateText = $"过期日期: {expiryDate.ToString("yyyy-MM-dd")}",
+                            StatusColor = GetStatusColor(statusName)
                         });
                     }
                     catch (Exception ex)
@@ -72,19 +115,19 @@ namespace zjq.ViewModels
             }
         }
 
-        private Microsoft.Maui.Graphics.Color GetStatusColor(int statusId)
+        private Microsoft.Maui.Graphics.Color GetStatusColor(string statusName)
         {
-            switch (statusId)
+            switch (statusName)
             {
-                case 1: // 正常
+                case "正常":
                     return Microsoft.Maui.Graphics.Colors.LightGreen;
-                case 2: // 需要维护
+                case "临期":
                     return Microsoft.Maui.Graphics.Colors.Yellow;
-                case 3: // 过期
+                case "过期":
                     return Microsoft.Maui.Graphics.Colors.Red;
-                case 4: // 损坏
+                case "损坏":
                     return Microsoft.Maui.Graphics.Colors.Orange;
-                case 5: // 在使用中
+                case "在使用中":
                     return Microsoft.Maui.Graphics.Colors.LightBlue;
                 default:
                     return Microsoft.Maui.Graphics.Colors.White;
