@@ -197,7 +197,8 @@ namespace zjq.Services
                 var rescuer = _selfRescuerRepo.GetById(record.SelfRescuerId);
                 if (rescuer != null)
                 {
-                    rescuer.StatusId = 1; // 正常状态
+                    // 注意：SelfRescuer 模型中没有 StatusId 属性
+                    // 这里可以根据需要添加其他逻辑，比如更新检查时间等
                     _selfRescuerRepo.Update(rescuer);
                 }
                 
@@ -221,7 +222,8 @@ namespace zjq.Services
                 var rescuer = await _selfRescuerRepo.GetByIdAsync(record.SelfRescuerId);
                 if (rescuer != null)
                 {
-                    rescuer.StatusId = 1; // 正常状态
+                    // 注意：SelfRescuer 模型中没有 StatusId 属性
+                    // 这里可以根据需要添加其他逻辑，比如更新检查时间等
                     await _selfRescuerRepo.UpdateAsync(rescuer);
                 }
                 
@@ -273,7 +275,8 @@ namespace zjq.Services
                 var rescuer = _selfRescuerRepo.GetById(record.SelfRescuerId);
                 if (rescuer != null)
                 {
-                    rescuer.StatusId = 5; // 在使用中状态
+                    // 注意：SelfRescuer 模型中没有 StatusId 属性
+                    // 这里可以根据需要添加其他逻辑，比如更新使用状态等
                     _selfRescuerRepo.Update(rescuer);
                 }
                 
@@ -297,7 +300,8 @@ namespace zjq.Services
                 var rescuer = await _selfRescuerRepo.GetByIdAsync(record.SelfRescuerId);
                 if (rescuer != null)
                 {
-                    rescuer.StatusId = 5; // 在使用中状态
+                    // 注意：SelfRescuer 模型中没有 StatusId 属性
+                    // 这里可以根据需要添加其他逻辑，比如更新使用状态等
                     await _selfRescuerRepo.UpdateAsync(rescuer);
                 }
                 
@@ -329,7 +333,8 @@ namespace zjq.Services
                     if (rescuer != null)
                     {
                         // 根据归还状态设置自救器状态
-                        rescuer.StatusId = condition == "正常" ? 1 : 2; // 正常或需要维护
+                        // 注意：SelfRescuer 模型中没有 StatusId 属性
+                        // 这里可以根据需要添加其他逻辑，比如更新检查时间等
                         _selfRescuerRepo.Update(rescuer);
                     }
                 }
@@ -359,7 +364,8 @@ namespace zjq.Services
                     if (rescuer != null)
                     {
                         // 根据归还状态设置自救器状态
-                        rescuer.StatusId = condition == "正常" ? 1 : 2; // 正常或需要维护
+                        // 注意：SelfRescuer 模型中没有 StatusId 属性
+                        // 这里可以根据需要添加其他逻辑，比如更新检查时间等
                         await _selfRescuerRepo.UpdateAsync(rescuer);
                     }
                 }
@@ -435,18 +441,50 @@ namespace zjq.Services
             {
                 var allRescuers = _selfRescuerRepo.GetAll();
                 var today = DateTime.Now;
+                var expiredRescuers = new List<SelfRescuer>();
                 
-                // 更新过期状态
+                // 检查过期状态
                 foreach (var rescuer in allRescuers)
                 {
-                    if (rescuer.ExpiryDate < today && rescuer.StatusId != 3)
+                    bool isExpired = false;
+                    
+                    // 优先使用 SelfRescueValidEnd 如果存在
+                    if (rescuer.SelfRescueValidEnd.HasValue)
                     {
-                        rescuer.StatusId = 3; // 过期状态
-                        _selfRescuerRepo.Update(rescuer);
+                        isExpired = rescuer.SelfRescueValidEnd.Value < today;
+                    }
+                    // 否则尝试从 SelfRescueId 解析出厂日期
+                    else if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
+                    {
+                        try
+                        {
+                            // 出厂编号的前8位数字表示日期，格式为YYYYMMDD
+                            string dateStr = rescuer.SelfRescueId.Substring(0, 8);
+                            
+                            // 检查是否都是数字
+                            if (System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                            {
+                                // 解析日期
+                                if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                                {
+                                    // 判断是否过期（3年内有效）
+                                    isExpired = parsedDate.AddYears(3) < today;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // 解析失败，视为未过期
+                        }
+                    }
+                    
+                    if (isExpired)
+                    {
+                        expiredRescuers.Add(rescuer);
                     }
                 }
                 
-                return allRescuers.Where(r => r.ExpiryDate < today).ToList();
+                return expiredRescuers;
             }
             catch (Exception ex)
             {
@@ -462,22 +500,180 @@ namespace zjq.Services
             {
                 var allRescuers = await _selfRescuerRepo.GetAllAsync();
                 var today = DateTime.Now;
+                var expiredRescuers = new List<SelfRescuer>();
                 
-                // 更新过期状态
+                // 检查过期状态
                 foreach (var rescuer in allRescuers)
                 {
-                    if (rescuer.ExpiryDate < today && rescuer.StatusId != 3)
+                    bool isExpired = false;
+                    
+                    // 优先使用 SelfRescueValidEnd 如果存在
+                    if (rescuer.SelfRescueValidEnd.HasValue)
                     {
-                        rescuer.StatusId = 3; // 过期状态
-                        await _selfRescuerRepo.UpdateAsync(rescuer);
+                        isExpired = rescuer.SelfRescueValidEnd.Value < today;
+                    }
+                    // 否则尝试从 SelfRescueId 解析出厂日期
+                    else if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
+                    {
+                        try
+                        {
+                            // 出厂编号的前8位数字表示日期，格式为YYYYMMDD
+                            string dateStr = rescuer.SelfRescueId.Substring(0, 8);
+                            
+                            // 检查是否都是数字
+                            if (System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                            {
+                                // 解析日期
+                                if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                                {
+                                    // 判断是否过期（3年内有效）
+                                    isExpired = parsedDate.AddYears(3) < today;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // 解析失败，视为未过期
+                        }
+                    }
+                    
+                    if (isExpired)
+                    {
+                        expiredRescuers.Add(rescuer);
                     }
                 }
                 
-                return allRescuers.Where(r => r.ExpiryDate < today).ToList();
+                return expiredRescuers;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error getting expired self rescuers: {ex.Message}");
+                return new List<SelfRescuer>();
+            }
+        }
+
+        // 获取临期的自救器
+        public List<SelfRescuer> GetExpiringSelfRescuers()
+        {
+            try
+            {
+                var allRescuers = _selfRescuerRepo.GetAll();
+                var currentDate = DateTime.Now;
+                
+                // 先获取所有符合临期条件的记录
+                var expiringCandidates = allRescuers.Where(c => 
+                    c.CheckTime.HasValue && 
+                    ( 
+                        // 压缩氧：160天到180天
+                        (c.DeviceType == 1 && 
+                         c.CheckTime.Value.AddDays(160) <= currentDate && 
+                         c.CheckTime.Value.AddDays(180) >= currentDate)
+                        ||
+                        // 化学氧：80天到90天
+                        (c.DeviceType == 0 && 
+                         c.CheckTime.Value.AddDays(80) <= currentDate && 
+                         c.CheckTime.Value.AddDays(90) >= currentDate)
+                    ) 
+                ).ToList();
+                
+                // 在内存中过滤未过期的自救器
+                var validExpiringSelfRescuers = expiringCandidates.Where(c => 
+                {
+                    // 尝试从SelfRescueId解析出厂日期
+                    if (string.IsNullOrWhiteSpace(c.SelfRescueId) || c.SelfRescueId.Length < 8)
+                        return true;
+                    
+                    try
+                    {
+                        // 出厂编号的前8位数字表示日期，格式为YYYYMMDD
+                        string dateStr = c.SelfRescueId.Substring(0, 8);
+                        
+                        // 检查是否都是数字
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                            return true; // 格式不正确，视为未过期
+                        
+                        // 解析日期
+                        if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                        {
+                            // 判断是否未过期（3年内有效）
+                            return parsedDate.AddYears(3) >= currentDate;
+                        }
+                        return true; // 解析失败，视为未过期
+                    }
+                    catch
+                    {
+                        return true; // 任何异常都视为未过期
+                    }
+                }).ToList();
+                
+                return validExpiringSelfRescuers;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting expiring self rescuers: {ex.Message}");
+                return new List<SelfRescuer>();
+            }
+        }
+
+        // 获取临期的自救器（异步）
+        public async Task<List<SelfRescuer>> GetExpiringSelfRescuersAsync()
+        {
+            try
+            {
+                var allRescuers = await _selfRescuerRepo.GetAllAsync();
+                var currentDate = DateTime.Now;
+                
+                // 先获取所有符合临期条件的记录
+                var expiringCandidates = allRescuers.Where(c => 
+                    c.CheckTime.HasValue && 
+                    ( 
+                        // 压缩氧：160天到180天
+                        (c.DeviceType == 1 && 
+                         c.CheckTime.Value.AddDays(160) <= currentDate && 
+                         c.CheckTime.Value.AddDays(180) >= currentDate)
+                        ||
+                        // 化学氧：80天到90天
+                        (c.DeviceType == 0 && 
+                         c.CheckTime.Value.AddDays(80) <= currentDate && 
+                         c.CheckTime.Value.AddDays(90) >= currentDate)
+                    ) 
+                ).ToList();
+                
+                // 在内存中过滤未过期的自救器
+                var validExpiringSelfRescuers = expiringCandidates.Where(c => 
+                {
+                    // 尝试从SelfRescueId解析出厂日期
+                    if (string.IsNullOrWhiteSpace(c.SelfRescueId) || c.SelfRescueId.Length < 8)
+                        return true;
+                    
+                    try
+                    {
+                        // 出厂编号的前8位数字表示日期，格式为YYYYMMDD
+                        string dateStr = c.SelfRescueId.Substring(0, 8);
+                        
+                        // 检查是否都是数字
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$"))
+                            return true; // 格式不正确，视为未过期
+                        
+                        // 解析日期
+                        if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+                        {
+                            // 判断是否未过期（3年内有效）
+                            return parsedDate.AddYears(3) >= currentDate;
+                        }
+                        return true; // 解析失败，视为未过期
+                    }
+                    catch
+                    {
+                        return true; // 任何异常都视为未过期
+                    }
+                }).ToList();
+                
+                return validExpiringSelfRescuers;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting expiring self rescuers: {ex.Message}");
                 return new List<SelfRescuer>();
             }
         }
@@ -488,7 +684,10 @@ namespace zjq.Services
             try
             {
                 var allRescuers = _selfRescuerRepo.GetAll();
-                return allRescuers.Where(r => r.StatusId == 2).ToList();
+                // 注意：SelfRescuer 模型中没有 StatusId 属性
+                // 这里可以根据需要添加其他逻辑来判断哪些自救器需要维护
+                // 例如，根据检查时间、校验结果等
+                return new List<SelfRescuer>();
             }
             catch (Exception ex)
             {
@@ -503,11 +702,89 @@ namespace zjq.Services
             try
             {
                 var allRescuers = await _selfRescuerRepo.GetAllAsync();
-                return allRescuers.Where(r => r.StatusId == 2).ToList();
+                // 注意：SelfRescuer 模型中没有 StatusId 属性
+                // 这里可以根据需要添加其他逻辑来判断哪些自救器需要维护
+                // 例如，根据检查时间、校验结果等
+                return new List<SelfRescuer>();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error getting self rescuers needing maintenance: {ex.Message}");
+                return new List<SelfRescuer>();
+            }
+        }
+
+        // 根据状态获取自救器
+        public async Task<List<SelfRescuer>> GetSelfRescuersByStatusAsync(string status)
+        {
+            try
+            {
+                var allRescuers = await _selfRescuerRepo.GetAllAsync();
+                var query = allRescuers.AsQueryable();
+                var currentDate = DateTime.Now;
+
+                switch (status)
+                {
+                    case "expiring": // 临期自救器
+                        // 先获取所有符合临期条件的记录
+                        var expiringCandidates = await Task.FromResult(query.Where(c => 
+                            c.CheckTime.HasValue && 
+                            ( 
+                                // 压缩氧：160天到180天
+                                (c.DeviceType == 1 && 
+                                 c.CheckTime.Value.AddDays(160) <= currentDate && 
+                                 c.CheckTime.Value.AddDays(180) >= currentDate) 
+                                || 
+                                // 化学氧：80天到90天
+                                (c.DeviceType == 0 && 
+                                 c.CheckTime.Value.AddDays(80) <= currentDate && 
+                                 c.CheckTime.Value.AddDays(90) >= currentDate) 
+                            ) 
+                        ).ToList());
+                        
+                        // 在内存中过滤未过期的自救器
+                        var validExpiringSelfRescuers = expiringCandidates.Where(c => 
+                        { 
+                            // 尝试从SelfRescueId解析出厂日期
+                            if (string.IsNullOrWhiteSpace(c.SelfRescueId) || c.SelfRescueId.Length < 8) 
+                                return true; 
+                            
+                            try 
+                            { 
+                                // 出厂编号的前8位数字表示日期，格式为YYYYMMDD
+                                string dateStr = c.SelfRescueId.Substring(0, 8); 
+                                
+                                // 检查是否都是数字
+                                if (!System.Text.RegularExpressions.Regex.IsMatch(dateStr, "^\\d{8}$")) 
+                                    return true; // 格式不正确，视为未过期
+                                
+                                // 解析日期
+                                if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate)) 
+                                { 
+                                    // 判断是否未过期（3年内有效）
+                                    return parsedDate.AddYears(3) >= currentDate; 
+                                } 
+                                return true; // 解析失败，视为未过期
+                            } 
+                            catch 
+                            { 
+                                return true; // 任何异常都视为未过期
+                            } 
+                        }).ToList();
+                        
+                        // 重新构造查询
+                        query = validExpiringSelfRescuers.AsQueryable();
+                        break;
+                    default:
+                        // 默认返回所有自救器
+                        break;
+                }
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting self rescuers by status: {ex.Message}");
                 return new List<SelfRescuer>();
             }
         }

@@ -7,7 +7,7 @@ namespace zjq.Views
 {
     public partial class QRScanPage : ContentPage
     {
-        public event EventHandler<string> ScanCompleted;
+        public event EventHandler<string>? ScanCompleted;
         
         public QRScanPage()
         {

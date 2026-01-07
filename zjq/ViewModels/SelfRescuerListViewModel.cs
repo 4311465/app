@@ -18,7 +18,7 @@ namespace zjq.ViewModels
         private string searchText;
 
         [ObservableProperty]
-        private SelfRescuerItemViewModel selectedSelfRescuer;
+        private SelfRescuerItemViewModel? selectedSelfRescuer;
 
         public SelfRescuerListViewModel(SelfRescuerService selfRescuerService)
         {

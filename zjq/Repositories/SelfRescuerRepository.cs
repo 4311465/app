@@ -38,16 +38,37 @@ namespace zjq.Repositories
                         rescuers.Add(new SelfRescuer
                         {
                             Id = reader.GetInt32(0),
-                            SerialNumber = reader.GetString(1),
-                            Model = reader.IsDBNull(2) ? null : reader.GetString(2),
-                            Manufacturer = reader.IsDBNull(3) ? null : reader.GetString(3),
-                            ManufactureDate = reader.IsDBNull(4) ? DateTime.Now : DateTime.ParseExact(reader.GetString(4), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            ExpiryDate = reader.IsDBNull(5) ? DateTime.Now : DateTime.ParseExact(reader.GetString(5), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            StatusId = reader.GetInt32(6),
-                            Location = reader.IsDBNull(7) ? null : reader.GetString(7),
-                            Notes = reader.IsDBNull(8) ? null : reader.GetString(8),
-                            CreatedAt = reader.IsDBNull(9) ? DateTime.Now : DateTime.ParseExact(reader.GetString(9), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                            UpdatedAt = reader.IsDBNull(10) ? DateTime.Now : DateTime.ParseExact(reader.GetString(10), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                            SelfRescueId = reader.GetString(1),
+                            CreateTime = reader.IsDBNull(2) ? DateTime.Now : DateTime.Parse(reader.GetString(2)),
+                            CheckTime = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3)),
+                            VerifyResult = reader.IsDBNull(4) ? null : (byte?)reader.GetInt32(4),
+                            Temp = reader.IsDBNull(5) ? null : (float?)reader.GetDouble(5),
+                            Hs = reader.IsDBNull(6) ? null : (float?)reader.GetDouble(6),
+                            SelfRescueInfo = reader.GetString(7),
+                            SelfRescueUrl = reader.GetString(8),
+                            SelfRescueModel = reader.GetString(9),
+                            SelfRescueSafeCode = reader.GetString(10),
+                            SelfRescueName = reader.GetString(11),
+                            SelfRescueIsValid = reader.GetString(12),
+                            SelfRescueCompany = reader.GetString(13),
+                            SelfRescueValidDate = reader.GetString(14),
+                            SelfRescueValidStart = reader.IsDBNull(15) ? null : DateTime.Parse(reader.GetString(15)),
+                            SelfRescueValidEnd = reader.IsDBNull(16) ? null : DateTime.Parse(reader.GetString(16)),
+                            ProcessingStatus = reader.IsDBNull(17) ? null : (byte?)reader.GetInt32(17),
+                            ProcessingCount = reader.IsDBNull(18) ? null : reader.GetInt32(18),
+                            EmployeeId = reader.IsDBNull(19) ? null : reader.GetInt32(19),
+                            DeviceType = reader.IsDBNull(20) ? 0 : reader.GetInt32(20),
+                            InspectorName = reader.IsDBNull(21) ? null : reader.GetString(21),
+                            PositivePressure = reader.IsDBNull(22) ? null : (float?)reader.GetDouble(22),
+                            PositivePressureTime = reader.IsDBNull(23) ? null : DateTime.Parse(reader.GetString(23)),
+                            NegativePressure = reader.IsDBNull(24) ? null : (float?)reader.GetDouble(24),
+                            NegativePressureTime = reader.IsDBNull(25) ? null : DateTime.Parse(reader.GetString(25)),
+                            ExhaustPressure = reader.IsDBNull(26) ? null : (float?)reader.GetDouble(26),
+                            ExhaustPressureTime = reader.IsDBNull(27) ? null : DateTime.Parse(reader.GetString(27)),
+                            QuantitativeOxygen = reader.IsDBNull(28) ? null : (float?)reader.GetDouble(28),
+                            QuantitativeOxygenTime = reader.IsDBNull(29) ? null : DateTime.Parse(reader.GetString(29)),
+                            ManualOxygen = reader.IsDBNull(30) ? null : (float?)reader.GetDouble(30),
+                            ManualOxygenTime = reader.IsDBNull(31) ? null : DateTime.Parse(reader.GetString(31))
                         });
                     }
                     catch (Exception ex)
@@ -90,16 +111,37 @@ namespace zjq.Repositories
                         return new SelfRescuer
                         {
                             Id = reader.GetInt32(0),
-                            SerialNumber = reader.GetString(1),
-                            Model = reader.IsDBNull(2) ? null : reader.GetString(2),
-                            Manufacturer = reader.IsDBNull(3) ? null : reader.GetString(3),
-                            ManufactureDate = reader.IsDBNull(4) ? DateTime.Now : DateTime.ParseExact(reader.GetString(4), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            ExpiryDate = reader.IsDBNull(5) ? DateTime.Now : DateTime.ParseExact(reader.GetString(5), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            StatusId = reader.GetInt32(6),
-                            Location = reader.IsDBNull(7) ? null : reader.GetString(7),
-                            Notes = reader.IsDBNull(8) ? null : reader.GetString(8),
-                            CreatedAt = reader.IsDBNull(9) ? DateTime.Now : DateTime.ParseExact(reader.GetString(9), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                            UpdatedAt = reader.IsDBNull(10) ? DateTime.Now : DateTime.ParseExact(reader.GetString(10), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                            SelfRescueId = reader.GetString(1),
+                            CreateTime = reader.IsDBNull(2) ? DateTime.Now : DateTime.Parse(reader.GetString(2)),
+                            CheckTime = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3)),
+                            VerifyResult = reader.IsDBNull(4) ? null : (byte?)reader.GetInt32(4),
+                            Temp = reader.IsDBNull(5) ? null : (float?)reader.GetDouble(5),
+                            Hs = reader.IsDBNull(6) ? null : (float?)reader.GetDouble(6),
+                            SelfRescueInfo = reader.GetString(7),
+                            SelfRescueUrl = reader.GetString(8),
+                            SelfRescueModel = reader.GetString(9),
+                            SelfRescueSafeCode = reader.GetString(10),
+                            SelfRescueName = reader.GetString(11),
+                            SelfRescueIsValid = reader.GetString(12),
+                            SelfRescueCompany = reader.GetString(13),
+                            SelfRescueValidDate = reader.GetString(14),
+                            SelfRescueValidStart = reader.IsDBNull(15) ? null : DateTime.Parse(reader.GetString(15)),
+                            SelfRescueValidEnd = reader.IsDBNull(16) ? null : DateTime.Parse(reader.GetString(16)),
+                            ProcessingStatus = reader.IsDBNull(17) ? null : (byte?)reader.GetInt32(17),
+                            ProcessingCount = reader.IsDBNull(18) ? null : reader.GetInt32(18),
+                            EmployeeId = reader.IsDBNull(19) ? null : reader.GetInt32(19),
+                            DeviceType = reader.IsDBNull(20) ? 0 : reader.GetInt32(20),
+                            InspectorName = reader.IsDBNull(21) ? null : reader.GetString(21),
+                            PositivePressure = reader.IsDBNull(22) ? null : (float?)reader.GetDouble(22),
+                            PositivePressureTime = reader.IsDBNull(23) ? null : DateTime.Parse(reader.GetString(23)),
+                            NegativePressure = reader.IsDBNull(24) ? null : (float?)reader.GetDouble(24),
+                            NegativePressureTime = reader.IsDBNull(25) ? null : DateTime.Parse(reader.GetString(25)),
+                            ExhaustPressure = reader.IsDBNull(26) ? null : (float?)reader.GetDouble(26),
+                            ExhaustPressureTime = reader.IsDBNull(27) ? null : DateTime.Parse(reader.GetString(27)),
+                            QuantitativeOxygen = reader.IsDBNull(28) ? null : (float?)reader.GetDouble(28),
+                            QuantitativeOxygenTime = reader.IsDBNull(29) ? null : DateTime.Parse(reader.GetString(29)),
+                            ManualOxygen = reader.IsDBNull(30) ? null : (float?)reader.GetDouble(30),
+                            ManualOxygenTime = reader.IsDBNull(31) ? null : DateTime.Parse(reader.GetString(31))
                         };
                     }
                     catch (Exception ex)
@@ -134,27 +176,58 @@ namespace zjq.Repositories
                 var command = connection.CreateCommand();
                 command.CommandText = @"
                     INSERT INTO SelfRescuers (
-                        SerialNumber, Model, Manufacturer, ManufactureDate, ExpiryDate,
-                        StatusId, Location, Notes, CreatedAt, UpdatedAt
+                        SelfRescueId, CreateTime, CheckTime, VerifyResult, Temp, Hs,
+                        SelfRescueInfo, SelfRescueUrl, SelfRescueModel, SelfRescueSafeCode,
+                        SelfRescueName, SelfRescueIsValid, SelfRescueCompany, SelfRescueValidDate,
+                        SelfRescueValidStart, SelfRescueValidEnd, ProcessingStatus, ProcessingCount,
+                        EmployeeId, DeviceType, InspectorName, PositivePressure, PositivePressureTime,
+                        NegativePressure, NegativePressureTime, ExhaustPressure, ExhaustPressureTime,
+                        QuantitativeOxygen, QuantitativeOxygenTime, ManualOxygen, ManualOxygenTime
                     ) VALUES (
-                        @SerialNumber, @Model, @Manufacturer, @ManufactureDate, @ExpiryDate,
-                        @StatusId, @Location, @Notes, @CreatedAt, @UpdatedAt
+                        @SelfRescueId, @CreateTime, @CheckTime, @VerifyResult, @Temp, @Hs,
+                        @SelfRescueInfo, @SelfRescueUrl, @SelfRescueModel, @SelfRescueSafeCode,
+                        @SelfRescueName, @SelfRescueIsValid, @SelfRescueCompany, @SelfRescueValidDate,
+                        @SelfRescueValidStart, @SelfRescueValidEnd, @ProcessingStatus, @ProcessingCount,
+                        @EmployeeId, @DeviceType, @InspectorName, @PositivePressure, @PositivePressureTime,
+                        @NegativePressure, @NegativePressureTime, @ExhaustPressure, @ExhaustPressureTime,
+                        @QuantitativeOxygen, @QuantitativeOxygenTime, @ManualOxygen, @ManualOxygenTime
                     )";
-            
+        
                 var now = DateTime.Now;
-                command.Parameters.AddWithValue("@SerialNumber", rescuer.SerialNumber);
-                command.Parameters.AddWithValue("@Model", string.IsNullOrEmpty(rescuer.Model) ? (object)DBNull.Value : rescuer.Model);
-                command.Parameters.AddWithValue("@Manufacturer", string.IsNullOrEmpty(rescuer.Manufacturer) ? (object)DBNull.Value : rescuer.Manufacturer);
-                command.Parameters.AddWithValue("@ManufactureDate", rescuer.ManufactureDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@ExpiryDate", rescuer.ExpiryDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@StatusId", rescuer.StatusId);
-                command.Parameters.AddWithValue("@Location", string.IsNullOrEmpty(rescuer.Location) ? (object)DBNull.Value : rescuer.Location);
-                command.Parameters.AddWithValue("@Notes", string.IsNullOrEmpty(rescuer.Notes) ? (object)DBNull.Value : rescuer.Notes);
-                command.Parameters.AddWithValue("@CreatedAt", now.ToString("yyyy-MM-dd HH:mm:ss"));
-                command.Parameters.AddWithValue("@UpdatedAt", now.ToString("yyyy-MM-dd HH:mm:ss"));
+                command.Parameters.AddWithValue("@SelfRescueId", rescuer.SelfRescueId);
+                command.Parameters.AddWithValue("@CreateTime", rescuer.CreateTime.ToString());
+                command.Parameters.AddWithValue("@CheckTime", rescuer.CheckTime.HasValue ? (object)rescuer.CheckTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@VerifyResult", rescuer.VerifyResult.HasValue ? (object)rescuer.VerifyResult.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Temp", rescuer.Temp.HasValue ? (object)rescuer.Temp.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Hs", rescuer.Hs.HasValue ? (object)rescuer.Hs.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@SelfRescueInfo", rescuer.SelfRescueInfo);
+                command.Parameters.AddWithValue("@SelfRescueUrl", rescuer.SelfRescueUrl);
+                command.Parameters.AddWithValue("@SelfRescueModel", rescuer.SelfRescueModel);
+                command.Parameters.AddWithValue("@SelfRescueSafeCode", rescuer.SelfRescueSafeCode);
+                command.Parameters.AddWithValue("@SelfRescueName", rescuer.SelfRescueName);
+                command.Parameters.AddWithValue("@SelfRescueIsValid", rescuer.SelfRescueIsValid);
+                command.Parameters.AddWithValue("@SelfRescueCompany", rescuer.SelfRescueCompany);
+                command.Parameters.AddWithValue("@SelfRescueValidDate", rescuer.SelfRescueValidDate);
+                command.Parameters.AddWithValue("@SelfRescueValidStart", rescuer.SelfRescueValidStart.HasValue ? (object)rescuer.SelfRescueValidStart.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@SelfRescueValidEnd", rescuer.SelfRescueValidEnd.HasValue ? (object)rescuer.SelfRescueValidEnd.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ProcessingStatus", rescuer.ProcessingStatus.HasValue ? (object)rescuer.ProcessingStatus.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ProcessingCount", rescuer.ProcessingCount.HasValue ? (object)rescuer.ProcessingCount.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@EmployeeId", rescuer.EmployeeId.HasValue ? (object)rescuer.EmployeeId.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@DeviceType", rescuer.DeviceType);
+                command.Parameters.AddWithValue("@InspectorName", string.IsNullOrEmpty(rescuer.InspectorName) ? (object)DBNull.Value : rescuer.InspectorName);
+                command.Parameters.AddWithValue("@PositivePressure", rescuer.PositivePressure.HasValue ? (object)rescuer.PositivePressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@PositivePressureTime", rescuer.PositivePressureTime.HasValue ? (object)rescuer.PositivePressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@NegativePressure", rescuer.NegativePressure.HasValue ? (object)rescuer.NegativePressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@NegativePressureTime", rescuer.NegativePressureTime.HasValue ? (object)rescuer.NegativePressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ExhaustPressure", rescuer.ExhaustPressure.HasValue ? (object)rescuer.ExhaustPressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ExhaustPressureTime", rescuer.ExhaustPressureTime.HasValue ? (object)rescuer.ExhaustPressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@QuantitativeOxygen", rescuer.QuantitativeOxygen.HasValue ? (object)rescuer.QuantitativeOxygen.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@QuantitativeOxygenTime", rescuer.QuantitativeOxygenTime.HasValue ? (object)rescuer.QuantitativeOxygenTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ManualOxygen", rescuer.ManualOxygen.HasValue ? (object)rescuer.ManualOxygen.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ManualOxygenTime", rescuer.ManualOxygenTime.HasValue ? (object)rescuer.ManualOxygenTime.Value.ToString() : DBNull.Value);
 
                 await command.ExecuteNonQueryAsync();
-            
+        
                 // 获取最后插入的ID
                 var lastIdCommand = connection.CreateCommand();
                 lastIdCommand.CommandText = "SELECT last_insert_rowid()";
@@ -183,27 +256,71 @@ namespace zjq.Repositories
                 var command = connection.CreateCommand();
                 command.CommandText = @"
                     UPDATE SelfRescuers SET
-                        SerialNumber = @SerialNumber,
-                        Model = @Model,
-                        Manufacturer = @Manufacturer,
-                        ManufactureDate = @ManufactureDate,
-                        ExpiryDate = @ExpiryDate,
-                        StatusId = @StatusId,
-                        Location = @Location,
-                        Notes = @Notes,
-                        UpdatedAt = @UpdatedAt
+                        SelfRescueId = @SelfRescueId,
+                        CreateTime = @CreateTime,
+                        CheckTime = @CheckTime,
+                        VerifyResult = @VerifyResult,
+                        Temp = @Temp,
+                        Hs = @Hs,
+                        SelfRescueInfo = @SelfRescueInfo,
+                        SelfRescueUrl = @SelfRescueUrl,
+                        SelfRescueModel = @SelfRescueModel,
+                        SelfRescueSafeCode = @SelfRescueSafeCode,
+                        SelfRescueName = @SelfRescueName,
+                        SelfRescueIsValid = @SelfRescueIsValid,
+                        SelfRescueCompany = @SelfRescueCompany,
+                        SelfRescueValidDate = @SelfRescueValidDate,
+                        SelfRescueValidStart = @SelfRescueValidStart,
+                        SelfRescueValidEnd = @SelfRescueValidEnd,
+                        ProcessingStatus = @ProcessingStatus,
+                        ProcessingCount = @ProcessingCount,
+                        EmployeeId = @EmployeeId,
+                        DeviceType = @DeviceType,
+                        InspectorName = @InspectorName,
+                        PositivePressure = @PositivePressure,
+                        PositivePressureTime = @PositivePressureTime,
+                        NegativePressure = @NegativePressure,
+                        NegativePressureTime = @NegativePressureTime,
+                        ExhaustPressure = @ExhaustPressure,
+                        ExhaustPressureTime = @ExhaustPressureTime,
+                        QuantitativeOxygen = @QuantitativeOxygen,
+                        QuantitativeOxygenTime = @QuantitativeOxygenTime,
+                        ManualOxygen = @ManualOxygen,
+                        ManualOxygenTime = @ManualOxygenTime
                     WHERE Id = @Id";
-            
+        
                 command.Parameters.AddWithValue("@Id", rescuer.Id);
-                command.Parameters.AddWithValue("@SerialNumber", rescuer.SerialNumber);
-                command.Parameters.AddWithValue("@Model", string.IsNullOrEmpty(rescuer.Model) ? (object)DBNull.Value : rescuer.Model);
-                command.Parameters.AddWithValue("@Manufacturer", string.IsNullOrEmpty(rescuer.Manufacturer) ? (object)DBNull.Value : rescuer.Manufacturer);
-                command.Parameters.AddWithValue("@ManufactureDate", rescuer.ManufactureDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@ExpiryDate", rescuer.ExpiryDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@StatusId", rescuer.StatusId);
-                command.Parameters.AddWithValue("@Location", string.IsNullOrEmpty(rescuer.Location) ? (object)DBNull.Value : rescuer.Location);
-                command.Parameters.AddWithValue("@Notes", string.IsNullOrEmpty(rescuer.Notes) ? (object)DBNull.Value : rescuer.Notes);
-                command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                command.Parameters.AddWithValue("@SelfRescueId", rescuer.SelfRescueId);
+                command.Parameters.AddWithValue("@CreateTime", rescuer.CreateTime.ToString());
+                command.Parameters.AddWithValue("@CheckTime", rescuer.CheckTime.HasValue ? (object)rescuer.CheckTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@VerifyResult", rescuer.VerifyResult.HasValue ? (object)rescuer.VerifyResult.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Temp", rescuer.Temp.HasValue ? (object)rescuer.Temp.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Hs", rescuer.Hs.HasValue ? (object)rescuer.Hs.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@SelfRescueInfo", rescuer.SelfRescueInfo);
+                command.Parameters.AddWithValue("@SelfRescueUrl", rescuer.SelfRescueUrl);
+                command.Parameters.AddWithValue("@SelfRescueModel", rescuer.SelfRescueModel);
+                command.Parameters.AddWithValue("@SelfRescueSafeCode", rescuer.SelfRescueSafeCode);
+                command.Parameters.AddWithValue("@SelfRescueName", rescuer.SelfRescueName);
+                command.Parameters.AddWithValue("@SelfRescueIsValid", rescuer.SelfRescueIsValid);
+                command.Parameters.AddWithValue("@SelfRescueCompany", rescuer.SelfRescueCompany);
+                command.Parameters.AddWithValue("@SelfRescueValidDate", rescuer.SelfRescueValidDate);
+                command.Parameters.AddWithValue("@SelfRescueValidStart", rescuer.SelfRescueValidStart.HasValue ? (object)rescuer.SelfRescueValidStart.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@SelfRescueValidEnd", rescuer.SelfRescueValidEnd.HasValue ? (object)rescuer.SelfRescueValidEnd.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ProcessingStatus", rescuer.ProcessingStatus.HasValue ? (object)rescuer.ProcessingStatus.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ProcessingCount", rescuer.ProcessingCount.HasValue ? (object)rescuer.ProcessingCount.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@EmployeeId", rescuer.EmployeeId.HasValue ? (object)rescuer.EmployeeId.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@DeviceType", rescuer.DeviceType);
+                command.Parameters.AddWithValue("@InspectorName", string.IsNullOrEmpty(rescuer.InspectorName) ? (object)DBNull.Value : rescuer.InspectorName);
+                command.Parameters.AddWithValue("@PositivePressure", rescuer.PositivePressure.HasValue ? (object)rescuer.PositivePressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@PositivePressureTime", rescuer.PositivePressureTime.HasValue ? (object)rescuer.PositivePressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@NegativePressure", rescuer.NegativePressure.HasValue ? (object)rescuer.NegativePressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@NegativePressureTime", rescuer.NegativePressureTime.HasValue ? (object)rescuer.NegativePressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ExhaustPressure", rescuer.ExhaustPressure.HasValue ? (object)rescuer.ExhaustPressure.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ExhaustPressureTime", rescuer.ExhaustPressureTime.HasValue ? (object)rescuer.ExhaustPressureTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@QuantitativeOxygen", rescuer.QuantitativeOxygen.HasValue ? (object)rescuer.QuantitativeOxygen.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@QuantitativeOxygenTime", rescuer.QuantitativeOxygenTime.HasValue ? (object)rescuer.QuantitativeOxygenTime.Value.ToString() : DBNull.Value);
+                command.Parameters.AddWithValue("@ManualOxygen", rescuer.ManualOxygen.HasValue ? (object)rescuer.ManualOxygen.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@ManualOxygenTime", rescuer.ManualOxygenTime.HasValue ? (object)rescuer.ManualOxygenTime.Value.ToString() : DBNull.Value);
 
                 await command.ExecuteNonQueryAsync();
             }

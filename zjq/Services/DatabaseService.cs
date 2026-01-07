@@ -36,17 +36,37 @@ namespace zjq.Services
                 rescuerTableCommand.CommandText = @"
                     CREATE TABLE IF NOT EXISTS SelfRescuers (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        SerialNumber TEXT NOT NULL UNIQUE,
-                        Model TEXT,
-                        Manufacturer TEXT,
-                        ManufactureDate TEXT,
-                        ExpiryDate TEXT,
-                        StatusId INTEGER,
-                        Location TEXT,
-                        Notes TEXT,
-                        CreatedAt TEXT,
-                        UpdatedAt TEXT,
-                        FOREIGN KEY (StatusId) REFERENCES StatusTypes (Id)
+                        SelfRescueId TEXT NOT NULL UNIQUE,
+                        CreateTime TEXT,
+                        CheckTime TEXT,
+                        VerifyResult INTEGER,
+                        Temp REAL,
+                        Hs REAL,
+                        SelfRescueInfo TEXT NOT NULL,
+                        SelfRescueUrl TEXT NOT NULL,
+                        SelfRescueModel TEXT NOT NULL,
+                        SelfRescueSafeCode TEXT NOT NULL,
+                        SelfRescueName TEXT NOT NULL,
+                        SelfRescueIsValid TEXT NOT NULL,
+                        SelfRescueCompany TEXT NOT NULL,
+                        SelfRescueValidDate TEXT NOT NULL,
+                        SelfRescueValidStart TEXT,
+                        SelfRescueValidEnd TEXT,
+                        ProcessingStatus INTEGER,
+                        ProcessingCount INTEGER,
+                        EmployeeId INTEGER,
+                        DeviceType INTEGER DEFAULT 0,
+                        InspectorName TEXT,
+                        PositivePressure REAL,
+                        PositivePressureTime TEXT,
+                        NegativePressure REAL,
+                        NegativePressureTime TEXT,
+                        ExhaustPressure REAL,
+                        ExhaustPressureTime TEXT,
+                        QuantitativeOxygen REAL,
+                        QuantitativeOxygenTime TEXT,
+                        ManualOxygen REAL,
+                        ManualOxygenTime TEXT
                     )";
                 rescuerTableCommand.ExecuteNonQuery();
 
@@ -82,6 +102,60 @@ namespace zjq.Services
                         FOREIGN KEY (SelfRescuerId) REFERENCES SelfRescuers (Id)
                     )";
                 usageTableCommand.ExecuteNonQuery();
+
+                // 创建部门表
+                var departmentTableCommand = connection.CreateCommand();
+                departmentTableCommand.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS Departments (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Name TEXT NOT NULL,
+                        Description TEXT,
+                        CreatedAt TEXT
+                    )";
+                departmentTableCommand.ExecuteNonQuery();
+
+                // 创建职位表
+                var positionTableCommand = connection.CreateCommand();
+                positionTableCommand.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS Positions (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Name TEXT NOT NULL,
+                        Description TEXT,
+                        CreatedAt TEXT
+                    )";
+                positionTableCommand.ExecuteNonQuery();
+
+                // 创建员工表
+                var employeeTableCommand = connection.CreateCommand();
+                employeeTableCommand.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS Employees (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Name TEXT NOT NULL,
+                        EmployeeNumber TEXT NOT NULL,
+                        Email TEXT,
+                        SelfRescueId TEXT,
+                        Phone TEXT,
+                        HireDate TEXT,
+                        CreatedAt TEXT,
+                        DepartmentId INTEGER,
+                        PositionId INTEGER,
+                        FOREIGN KEY (DepartmentId) REFERENCES Departments (Id),
+                        FOREIGN KEY (PositionId) REFERENCES Positions (Id)
+                    )";
+                employeeTableCommand.ExecuteNonQuery();
+
+                // 创建检查信息表
+                var checkInfoTableCommand = connection.CreateCommand();
+                checkInfoTableCommand.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS CheckInfos (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        CheckDate TEXT NOT NULL,
+                        CheckResult TEXT NOT NULL,
+                        Notes TEXT,
+                        EmployeeId INTEGER,
+                        FOREIGN KEY (EmployeeId) REFERENCES Employees (Id)
+                    )";
+                checkInfoTableCommand.ExecuteNonQuery();
 
                 // 初始化状态类型数据
                 SeedStatusTypes(connection);

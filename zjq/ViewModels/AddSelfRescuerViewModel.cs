@@ -18,85 +18,193 @@ namespace zjq.ViewModels
         private readonly SelfRescuerService _selfRescuerService;
 
         [ObservableProperty]
-        private string serialNumber;
+        private string selfRescueId;
 
         [ObservableProperty]
-        private string model;
+        private string selfRescueModel;
 
         [ObservableProperty]
-        private string manufacturer;
+        private string selfRescueCompany;
 
         [ObservableProperty]
-        private DateTime manufactureDate = DateTime.Now;
+        private string selfRescueName;
 
         [ObservableProperty]
-        private DateTime expiryDate = DateTime.Now;
+        private string selfRescueSafeCode;
 
         [ObservableProperty]
-        private StatusType selectedStatus;
+        private string selfRescueValidDate;
 
         [ObservableProperty]
-        private string location;
+        private DateTime? selfRescueValidStart;
 
         [ObservableProperty]
-        private string notes;
+        private DateTime? selfRescueValidEnd;
 
         [ObservableProperty]
-        private ObservableCollection<StatusType> statusTypes;
+        private string selfRescueInfo;
+
+        [ObservableProperty]
+        private string selfRescueUrl;
+
+        [ObservableProperty]
+        private string selfRescueIsValid;
+
+        [ObservableProperty]
+        private int deviceType = 0;
+
+        [ObservableProperty]
+        private byte? processingStatus;
+
+        [ObservableProperty]
+        private int? processingCount;
+
+        [ObservableProperty]
+        private int? employeeId;
+
+        [ObservableProperty]
+        private string inspectorName;
+
+        [ObservableProperty]
+        private float? positivePressure;
+
+        [ObservableProperty]
+        private DateTime? positivePressureTime;
+
+        [ObservableProperty]
+        private float? negativePressure;
+
+        [ObservableProperty]
+        private DateTime? negativePressureTime;
+
+        [ObservableProperty]
+        private float? exhaustPressure;
+
+        [ObservableProperty]
+        private DateTime? exhaustPressureTime;
+
+        [ObservableProperty]
+        private float? quantitativeOxygen;
+
+        [ObservableProperty]
+        private DateTime? quantitativeOxygenTime;
+
+        [ObservableProperty]
+        private float? manualOxygen;
+
+        [ObservableProperty]
+        private DateTime? manualOxygenTime;
+
+        [ObservableProperty]
+        private float? temp;
+
+        [ObservableProperty]
+        private float? hs;
+
+        [ObservableProperty]
+        private byte? verifyResult;
+
+        [ObservableProperty]
+        private DateTime? checkTime;
 
         public AddSelfRescuerViewModel(SelfRescuerService selfRescuerService)
         {
             _selfRescuerService = selfRescuerService;
             Title = "添加自救器";
-            _ = LoadStatusTypesAsync();
-        }
-
-        private async Task LoadStatusTypesAsync()
-        {
-            try
-            {
-                IsBusy = true;
-                var statusTypesList = await _selfRescuerService.GetAllStatusTypesAsync();
-                StatusTypes = new ObservableCollection<StatusType>(statusTypesList);
-                SelectedStatus = StatusTypes.FirstOrDefault(); // 默认选择第一个状态
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error loading status types: {ex.Message}");
-                StatusTypes = new ObservableCollection<StatusType>();
-                // 创建一个默认状态，以防加载失败
-                StatusTypes.Add(new StatusType { Id = 1, Name = "正常", Description = "正常可用状态" });
-                SelectedStatus = StatusTypes.FirstOrDefault();
-            }
-            finally
-            {
-                IsBusy = false;
-            }
         }
 
         [RelayCommand]
         private async Task SaveAsync()
         {
             // 验证输入
-            if (string.IsNullOrWhiteSpace(SerialNumber))
+            if (string.IsNullOrWhiteSpace(SelfRescueId))
             {
-                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入序列号", "确定");
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入出厂编号", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueInfo))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入自救器信息", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueUrl))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入扫码URL", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueModel))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入自救器类型", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueSafeCode))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入安标", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueName))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入自救器名称", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueIsValid))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入有效性", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueCompany))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入生产厂家", "确定");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SelfRescueValidDate))
+            {
+                await App.Current.MainPage.DisplayAlertAsync("错误", "请输入有效时间范围", "确定");
                 return;
             }
 
             // 创建新的自救器对象
             var rescuer = new SelfRescuer
             {
-                SerialNumber = SerialNumber,
-                Model = Model,
-                Manufacturer = Manufacturer,
-                ManufactureDate = ManufactureDate,
-                ExpiryDate = ExpiryDate,
-                StatusId = SelectedStatus?.Id ?? 1,
-                Location = Location,
-                Notes = Notes,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                SelfRescueId = SelfRescueId,
+                CreateTime = DateTime.Now,
+                CheckTime = CheckTime,
+                VerifyResult = VerifyResult,
+                Temp = Temp,
+                Hs = Hs,
+                SelfRescueInfo = SelfRescueInfo,
+                SelfRescueUrl = SelfRescueUrl,
+                SelfRescueModel = SelfRescueModel,
+                SelfRescueSafeCode = SelfRescueSafeCode,
+                SelfRescueName = SelfRescueName,
+                SelfRescueIsValid = SelfRescueIsValid,
+                SelfRescueCompany = SelfRescueCompany,
+                SelfRescueValidDate = SelfRescueValidDate,
+                SelfRescueValidStart = SelfRescueValidStart,
+                SelfRescueValidEnd = SelfRescueValidEnd,
+                ProcessingStatus = ProcessingStatus,
+                ProcessingCount = ProcessingCount,
+                EmployeeId = EmployeeId,
+                DeviceType = DeviceType,
+                InspectorName = InspectorName,
+                PositivePressure = PositivePressure,
+                PositivePressureTime = PositivePressureTime,
+                NegativePressure = NegativePressure,
+                NegativePressureTime = NegativePressureTime,
+                ExhaustPressure = ExhaustPressure,
+                ExhaustPressureTime = ExhaustPressureTime,
+                QuantitativeOxygen = QuantitativeOxygen,
+                QuantitativeOxygenTime = QuantitativeOxygenTime,
+                ManualOxygen = ManualOxygen,
+                ManualOxygenTime = ManualOxygenTime
             };
 
             try
@@ -182,42 +290,54 @@ namespace zjq.ViewModels
             try
             {
                 // 假设二维码数据格式为JSON
-                // 示例格式: {"SerialNumber":"SR-12345","Model":"ABC-120","Manufacturer":"制造商A","ManufactureDate":"2024-01-01","ExpiryDate":"2027-01-01"}
+                // 示例格式: {"SelfRescueId":"SR-12345","SelfRescueModel":"ABC-120","SelfRescueCompany":"制造商A","SelfRescueName":"自救器名称","SelfRescueSafeCode":"安标编号","SelfRescueValidDate":"3年"}
                 if (qrCodeText.StartsWith("{") && qrCodeText.EndsWith("}"))
                 {
-                    // 简单解析JSON (实际项目中可使用Newtonsoft.Json或System.Text.Json)
+                    // 简单解析JSON
                     var data = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, string>>(qrCodeText);
                     if (data != null)
                     {
-                        if (data.TryGetValue("SerialNumber", out var serialNumber))
-                            SerialNumber = serialNumber;
-                        if (data.TryGetValue("Model", out var model))
-                            Model = model;
-                        if (data.TryGetValue("Manufacturer", out var manufacturer))
-                            Manufacturer = manufacturer;
-                        if (data.TryGetValue("ManufactureDate", out var manufactureDate))
+                        if (data.TryGetValue("SelfRescueId", out var selfRescueId))
+                            SelfRescueId = selfRescueId;
+                        if (data.TryGetValue("SelfRescueModel", out var selfRescueModel))
+                            SelfRescueModel = selfRescueModel;
+                        if (data.TryGetValue("SelfRescueCompany", out var selfRescueCompany))
+                            SelfRescueCompany = selfRescueCompany;
+                        if (data.TryGetValue("SelfRescueName", out var selfRescueName))
+                            SelfRescueName = selfRescueName;
+                        if (data.TryGetValue("SelfRescueSafeCode", out var selfRescueSafeCode))
+                            SelfRescueSafeCode = selfRescueSafeCode;
+                        if (data.TryGetValue("SelfRescueValidDate", out var selfRescueValidDate))
+                            SelfRescueValidDate = selfRescueValidDate;
+                        if (data.TryGetValue("SelfRescueInfo", out var selfRescueInfo))
+                            SelfRescueInfo = selfRescueInfo;
+                        if (data.TryGetValue("SelfRescueUrl", out var selfRescueUrl))
+                            SelfRescueUrl = selfRescueUrl;
+                        if (data.TryGetValue("SelfRescueIsValid", out var selfRescueIsValid))
+                            SelfRescueIsValid = selfRescueIsValid;
+                        if (data.TryGetValue("SelfRescueValidStart", out var selfRescueValidStart))
                         {
-                            if (DateTime.TryParse(manufactureDate, out var date))
-                                ManufactureDate = date;
+                            if (DateTime.TryParse(selfRescueValidStart, out var date))
+                                SelfRescueValidStart = date;
                         }
-                        if (data.TryGetValue("ExpiryDate", out var expiryDate))
+                        if (data.TryGetValue("SelfRescueValidEnd", out var selfRescueValidEnd))
                         {
-                            if (DateTime.TryParse(expiryDate, out var date))
-                                ExpiryDate = date;
+                            if (DateTime.TryParse(selfRescueValidEnd, out var date))
+                                SelfRescueValidEnd = date;
                         }
                     }
                 }
                 else
                 {
-                    // 如果不是JSON格式，假设只是序列号
-                    SerialNumber = qrCodeText;
+                    // 如果不是JSON格式，假设只是出厂编号
+                    SelfRescueId = qrCodeText;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error parsing QR code data: {ex.Message}");
-                // 如果解析失败，将整个二维码内容作为序列号
-                SerialNumber = qrCodeText;
+                // 如果解析失败，将整个二维码内容作为出厂编号
+                SelfRescueId = qrCodeText;
             }
         }
     }
