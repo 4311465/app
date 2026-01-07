@@ -138,15 +138,14 @@ namespace zjq.ViewModels
             try
             {
                 IsBusy = true;
-                var scanResult = await App.Current.MainPage.DisplayAlertAsync(
-                    "扫码确认",
-                    "请将摄像头对准电子标签二维码",
-                    "开始扫码",
-                    "取消");
-
-                if (!scanResult)
+                
+                // 检查设备是否支持条形码扫描（是否有摄像头）
+                if (!ZXing.Net.Maui.BarcodeScanning.IsSupported)
+                {
+                    await App.Current.MainPage.DisplayAlertAsync("设备不支持", "当前设备没有摄像头，无法使用扫码功能", "确定");
                     return;
-
+                }
+                
                 // 检查摄像头权限
                 var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
                 if (status != PermissionStatus.Granted)
@@ -159,19 +158,13 @@ namespace zjq.ViewModels
                     }
                 }
 
-                // 提示用户手动输入二维码内容（临时解决方案）
-                var qrCodeContent = await App.Current.MainPage.DisplayPromptAsync(
-                    "扫码",
-                    "请输入二维码内容或手动输入序列号:",
-                    "确定",
-                    "取消",
-                    "序列号",
-                    50);
-
-                if (!string.IsNullOrWhiteSpace(qrCodeContent))
+                // 导航到扫码页面
+                var scanPage = new zjq.Views.QRScanPage();
+                scanPage.ScanCompleted += (sender, result) =>
                 {
-                    ParseQRCodeData(qrCodeContent);
-                }
+                    ParseQRCodeData(result);
+                };
+                await App.Current.MainPage.Navigation.PushAsync(scanPage);
             }
             catch (Exception ex)
             {
