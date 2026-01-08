@@ -4,9 +4,64 @@
              x:Class="zjq.Views.SelfRescuerDetailPage"
              Title="自救器详情">
 
-    <StackLayout Padding="20" Spacing="20">
-        <Label Text="自救器详情" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
-        <Label Text="功能开发中..." FontSize="18" HorizontalOptions="Center" />
-    </StackLayout>
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            <!-- 加载指示器 -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            
+            <!-- 基本信息卡片 -->
+            <Frame BorderColor="LightGray" CornerRadius="10">
+                <StackLayout Spacing="10">
+                    <Label Text="基本信息" FontSize="18" FontAttributes="Bold" TextColor="Blue" />
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="出厂编号:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding SerialNumber}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="型号:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding Model}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="设备类型:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding DeviceType}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="生产厂家:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding Company}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="安标编号:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding SafeCode}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- 状态信息卡片 -->
+            <Frame BorderColor="LightGray" CornerRadius="10">
+                <StackLayout Spacing="10">
+                    <Label Text="状态信息" FontSize="18" FontAttributes="Bold" TextColor="Green" />
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="当前状态:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding StatusName}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="过期日期:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding ExpiryDateText}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="有效日期:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding ValidDate}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="存放位置:" FontAttributes="Bold" WidthRequest="100" />
+                        <Label Text="{Binding Location}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <!-- 操作按钮 -->
+            <Button Text="返回列表" Command="{Binding BackCommand}" BackgroundColor="Blue" TextColor="White" />
+        </StackLayout>
+    </ScrollView>
 
 </ContentPage>

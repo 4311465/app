@@ -10,5 +10,15 @@ namespace zjq.Views
             InitializeComponent();
             BindingContext = viewModel;
         }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            
+            if (BindingContext is SelfRescuerListViewModel viewModel)
+            {
+                await viewModel.InitializeAsync();
+            }
+        }
     }
 }

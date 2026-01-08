@@ -20,11 +20,27 @@ namespace zjq.ViewModels
         [ObservableProperty]
         private SelfRescuerItemViewModel? selectedSelfRescuer;
 
+        partial void OnSelectedSelfRescuerChanged(SelfRescuerItemViewModel? oldValue, SelfRescuerItemViewModel? newValue)
+        {
+            if (newValue != null)
+            {
+                _ = SelfRescuerSelectedCommand.ExecuteAsync(null);
+            }
+        }
+
         public SelfRescuerListViewModel(SelfRescuerService selfRescuerService)
         {
             _selfRescuerService = selfRescuerService;
             Title = "自救器列表";
-            _ = LoadSelfRescuersAsync();
+            SelfRescuers = new ObservableCollection<SelfRescuerItemViewModel>();
+        }
+
+        /// <summary>
+        /// 加载自救器数据（供页面的 OnAppearing 方法调用）
+        /// </summary>
+        public async Task InitializeAsync()
+        {
+            await LoadSelfRescuersAsync();
         }
 
         private async Task LoadSelfRescuersAsync()
@@ -143,10 +159,19 @@ namespace zjq.ViewModels
         [RelayCommand]
         private async Task SelfRescuerSelectedAsync()
         {
-            if (SelectedSelfRescuer != null)
+            try
             {
-                await Shell.Current.GoToAsync($"//SelfRescuerDetailPage?Id={SelectedSelfRescuer.Id}");
-                SelectedSelfRescuer = null;
+                if (SelectedSelfRescuer != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Navigating from ViewModel to detail page for SelfRescuerId: {SelectedSelfRescuer.Id}");
+                    await Shell.Current.GoToAsync($"//SelfRescuerDetailPage?Id={SelectedSelfRescuer.Id}");
+                    SelectedSelfRescuer = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in SelfRescuerSelectedAsync: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
             }
         }
 

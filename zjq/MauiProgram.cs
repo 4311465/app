@@ -33,6 +33,7 @@ namespace zjq
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<AddSelfRescuerViewModel>();
             builder.Services.AddTransient<SelfRescuerListViewModel>();
+            builder.Services.AddTransient<SelfRescuerDetailViewModel>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
