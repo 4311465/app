@@ -289,6 +289,7 @@ namespace zjq.ViewModels
         {
             try
             {
+                IsBusy = true;
                 // 检查是否是URL格式
                 if (qrCodeText.StartsWith("http"))
                 {
@@ -342,6 +343,10 @@ namespace zjq.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Error parsing QR code data: {ex.Message}");
                 // 如果解析失败，将整个二维码内容作为出厂编号
                 SelfRescueId = qrCodeText;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -407,43 +412,7 @@ namespace zjq.ViewModels
                 // 构建API URL
                 string apiUrl = $"http://plm.aqbz.org:9999/prod-api/application/qrcode/product/v1?code={deviceCode}";
                 System.Diagnostics.Debug.WriteLine($"API URL: {apiUrl}");
-
-                // 网络连接测试
-                System.Diagnostics.Debug.WriteLine("开始网络连接测试...");
-                bool isConnected = await TestNetworkConnectivity();
-                if (!isConnected)
-                {
-                    await App.Current.MainPage.DisplayAlert("网络错误", "无法连接到网络，请检查网络设置", "确定");
-                    return;
-                }
-
-                // DNS解析测试
-                System.Diagnostics.Debug.WriteLine("开始DNS解析测试...");
-                bool isDnsResolved = await TestDnsResolution("plm.aqbz.org");
-                if (!isDnsResolved)
-                {
-                    await App.Current.MainPage.DisplayAlert("DNS错误", "无法解析API服务器域名，请检查网络设置", "确定");
-                    return;
-                }
-
-                //// 测试API服务器可达性
-                //System.Diagnostics.Debug.WriteLine("开始测试API服务器可达性...");
-                //bool isServerReachable = await TestServerReachability("plm.aqbz.org");
-                //if (!isServerReachable)
-                //{
-                //    await App.Current.MainPage.DisplayAlert("服务器错误", "无法连接到API服务器，请检查服务器状态", "确定");
-                //    return;
-                //}
-
-                // 测试TCP连接
-                System.Diagnostics.Debug.WriteLine("开始测试TCP连接...");
-                bool isTcpConnected = await TestTcpConnection("plm.aqbz.org", 9999);
-                if (!isTcpConnected)
-                {
-                    await App.Current.MainPage.DisplayAlert("TCP连接错误", "无法建立到服务器的TCP连接，请检查网络设置或防火墙配置", "确定");
-                    return;
-                }
-
+               
                 // 创建并配置HttpClient
                 var httpClientHandler = new HttpClientHandler
                 {
@@ -611,112 +580,5 @@ namespace zjq.ViewModels
             }
         }
 
-        /// <summary>
-        /// 测试网络连接
-        /// </summary>
-        private async Task<bool> TestNetworkConnectivity()
-        {
-            try
-            {
-                // 收集网络接口信息
-                System.Diagnostics.Debug.WriteLine("=== 网络接口信息 ===");
-                var networkInterfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
-                foreach (var iface in networkInterfaces)
-                {
-                    if (iface.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"{iface.Name} ({iface.Description}) - {iface.OperationalStatus}");
-                        var addresses = iface.GetIPProperties().UnicastAddresses;
-                        foreach (var addr in addresses)
-                        {
-                            if (addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                            {
-                                System.Diagnostics.Debug.WriteLine($"\tIPv4: {addr.Address}");
-                            }
-                        }
-                    }
-                }
-
-                using var ping = new System.Net.NetworkInformation.Ping();
-                var result = await ping.SendPingAsync("8.8.8.8", 5000);
-                System.Diagnostics.Debug.WriteLine($"网络测试结果: {result.Status}，响应时间: {result.RoundtripTime}ms");
-                return result.Status == System.Net.NetworkInformation.IPStatus.Success;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"网络测试失败: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 测试TCP连接
-        /// </summary>
-        private async Task<bool> TestTcpConnection(string host, int port)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"开始TCP连接测试: {host}:{port}");
-                using var tcpClient = new System.Net.Sockets.TcpClient();
-                var connectTask = tcpClient.ConnectAsync(host, port);
-                var timeoutTask = Task.Delay(10000); // 10秒超时
-
-                var completedTask = await Task.WhenAny(connectTask, timeoutTask);
-                if (completedTask == timeoutTask)
-                {
-                    System.Diagnostics.Debug.WriteLine("TCP连接测试超时");
-                    return false;
-                }
-
-                await connectTask; // 确保抛出任何连接异常
-                System.Diagnostics.Debug.WriteLine("TCP连接测试成功");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"TCP连接测试失败: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 测试DNS解析
-        /// </summary>
-        private async Task<bool> TestDnsResolution(string host)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"开始DNS解析测试: {host}");
-                var addresses = await System.Net.Dns.GetHostAddressesAsync(host);
-                foreach (var address in addresses)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DNS解析结果: {address.ToString()}");
-                }
-                return addresses.Length > 0;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"DNS解析失败: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 测试服务器可达性
-        /// </summary>
-        private async Task<bool> TestServerReachability(string host)
-        {
-            try
-            {
-                using var ping = new System.Net.NetworkInformation.Ping();
-                var result = await ping.SendPingAsync(host, 5000);
-                System.Diagnostics.Debug.WriteLine($"服务器测试结果: {result.Status}，响应时间: {result.RoundtripTime}ms");
-                return result.Status == System.Net.NetworkInformation.IPStatus.Success;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"服务器测试失败: {ex.Message}");
-                return false;
-            }
-        }    }
+   }
 }

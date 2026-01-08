@@ -4,82 +4,93 @@
              x:Class="zjq.Views.AddSelfRescuerPage"
              Title="添加自救器">
 
-    <ScrollView>
-        <StackLayout Padding="20" Spacing="15">
-            <Entry x:Name="SelfRescueIdEntry" 
-                   Placeholder="出厂编号" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueId}" />
-            
-            <Button Text="扫码" 
-                    Command="{Binding ScanQRCodeCommand}" 
-                    Margin="0,5,0,15" />
-            
-            <Entry x:Name="SelfRescueModelEntry" 
-                   Placeholder="自救器类型" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueModel}" />
-            
-            <Entry x:Name="SelfRescueCompanyEntry" 
-                   Placeholder="生产厂家" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueCompany}" />
-            
-            <Entry x:Name="SelfRescueNameEntry" 
-                   Placeholder="自救器名称" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueName}" />
-            
-            <Entry x:Name="SelfRescueSafeCodeEntry" 
-                   Placeholder="安标" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueSafeCode}" />
-            
-            <Entry x:Name="SelfRescueValidDateEntry" 
-                   Placeholder="有效时间范围" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueValidDate}" />
-            
-            <Label Text="有效期开始" FontAttributes="Bold" />
-            <DatePicker x:Name="SelfRescueValidStartPicker"
-                        Date="{Binding SelfRescueValidStart, Mode=TwoWay}" />
-            
-            <Label Text="有效期结束" FontAttributes="Bold" />
-            <DatePicker x:Name="SelfRescueValidEndPicker"
-                        Date="{Binding SelfRescueValidEnd, Mode=TwoWay}" />
-            
-            <Entry x:Name="SelfRescueInfoEntry" 
-                   Placeholder="自救器信息" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueInfo}" />
-            
-            <Entry x:Name="SelfRescueUrlEntry" 
-                   Placeholder="扫码URL" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueUrl}" />
-            
-            <Entry x:Name="SelfRescueIsValidEntry" 
-                   Placeholder="有效性" 
-                   Keyboard="Text"
-                   Text="{Binding SelfRescueIsValid}" />
-            
-            <Label Text="设备类型" FontAttributes="Bold" />
-            <Picker x:Name="DeviceTypePicker" 
-                    Title="选择设备类型"
-                    SelectedIndex="{Binding DeviceType}">
-                <Picker.Items>
-                    <x:String>化学氧</x:String>
-                    <x:String>压缩氧</x:String>
-                </Picker.Items>
-            </Picker>
-            
-            <Button Text="保存" 
-                    Command="{Binding SaveCommand}" 
-                    Margin="0,20,0,0" />
-            
-            <Button Text="取消" 
-                    Command="{Binding CancelCommand}" />
-        </StackLayout>
-    </ScrollView>
+    <Grid>
+        <ScrollView>
+            <StackLayout Padding="20" Spacing="15">
+                <Entry x:Name="SelfRescueIdEntry" 
+                       Placeholder="出厂编号" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueId}" />
+                
+                <Button Text="扫码" 
+                        Command="{Binding ScanQRCodeCommand}" 
+                        Margin="0,5,0,15" />
+                
+                <Entry x:Name="SelfRescueModelEntry" 
+                       Placeholder="自救器类型" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueModel}" />
+                
+                <Entry x:Name="SelfRescueCompanyEntry" 
+                       Placeholder="生产厂家" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueCompany}" />
+                
+                <Entry x:Name="SelfRescueNameEntry" 
+                       Placeholder="自救器名称" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueName}" />
+                
+                <Entry x:Name="SelfRescueSafeCodeEntry" 
+                       Placeholder="安标" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueSafeCode}" />
+                
+                <Entry x:Name="SelfRescueValidDateEntry" 
+                       Placeholder="有效时间范围" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueValidDate}" />
+                
+                <Label Text="有效期开始" FontAttributes="Bold" />
+                <DatePicker x:Name="SelfRescueValidStartPicker"
+                            Date="{Binding SelfRescueValidStart, Mode=TwoWay}" />
+                
+                <Label Text="有效期结束" FontAttributes="Bold" />
+                <DatePicker x:Name="SelfRescueValidEndPicker"
+                            Date="{Binding SelfRescueValidEnd, Mode=TwoWay}" />
+                
+                <Entry x:Name="SelfRescueInfoEntry" 
+                       Placeholder="自救器信息" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueInfo}" />
+                
+                <Entry x:Name="SelfRescueUrlEntry" 
+                       Placeholder="扫码URL" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueUrl}" />
+                
+                <Entry x:Name="SelfRescueIsValidEntry" 
+                       Placeholder="有效性" 
+                       Keyboard="Text"
+                       Text="{Binding SelfRescueIsValid}" />
+                
+                <Label Text="设备类型" FontAttributes="Bold" />
+                <Picker x:Name="DeviceTypePicker" 
+                        Title="选择设备类型"
+                        SelectedIndex="{Binding DeviceType}">
+                    <Picker.Items>
+                        <x:String>化学氧</x:String>
+                        <x:String>压缩氧</x:String>
+                    </Picker.Items>
+                </Picker>
+                
+                <Button Text="保存" 
+                        Command="{Binding SaveCommand}" 
+                        Margin="0,20,0,0" />
+                
+                <Button Text="取消" 
+                        Command="{Binding CancelCommand}" />
+            </StackLayout>
+        </ScrollView>
+
+        <!-- 加载指示器 -->
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="#007AFF"
+                           Scale="2"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
 
 </ContentPage>
