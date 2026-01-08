@@ -3,9 +3,12 @@ using zjq.ViewModels;
 
 namespace zjq.Views
 {
+    [QueryProperty(nameof(Id), "Id")]
     public partial class SelfRescuerDetailPage : ContentPage
     {
         private readonly SelfRescuerDetailViewModel _viewModel;
+
+        public string Id { get; set; }
 
         public SelfRescuerDetailPage(SelfRescuerDetailViewModel viewModel)
         {
@@ -20,24 +23,17 @@ namespace zjq.Views
             
             try
             {
-                // 使用 Shell 导航参数
-                var navigationParameters = Shell.Current.CurrentState?.Location?.Query;
-                if (!string.IsNullOrEmpty(navigationParameters))
+                System.Diagnostics.Debug.WriteLine($"Received navigation parameter: Id={Id}");
+                
+                int id = 0;
+                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out id) && id > 0)
                 {
-                    // 直接解析查询字符串
-                    var query = navigationParameters.TrimStart('?');
-                    var paramPairs = query.Split('&');
-                    
-                    foreach (var pair in paramPairs)
-                    {
-                        var keyValue = pair.Split('=');
-                        if (keyValue.Length == 2 && keyValue[0] == "Id" && int.TryParse(keyValue[1], out var id))
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Received navigation parameter: Id={id}");
-                            await _viewModel.LoadSelfRescuerAsync(id);
-                            break;
-                        }
-                    }
+                    System.Diagnostics.Debug.WriteLine($"Extracted Id: {id}");
+                    await _viewModel.LoadSelfRescuerAsync(id);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Invalid Id parameter: {Id}");
                 }
             }
             catch (Exception ex)

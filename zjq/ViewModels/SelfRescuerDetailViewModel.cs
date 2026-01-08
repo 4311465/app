@@ -56,11 +56,24 @@ namespace zjq.ViewModels
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"Attempting to load self rescuer with Id: {id}");
                 IsBusy = true;
+                
+                // 检查服务是否可用
+                if (_selfRescuerService == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SelfRescuerService is null!");
+                    return;
+                }
+                
                 SelfRescuer = await _selfRescuerService.GetSelfRescuerByIdAsync(id);
+                
+                System.Diagnostics.Debug.WriteLine($"Loaded self rescuer: {SelfRescuer}");
                 
                 if (SelfRescuer != null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"SelfRescuer data: Id={SelfRescuer.Id}, SelfRescueId={SelfRescuer.SelfRescueId}, Model={SelfRescuer.SelfRescueModel}");
+                    
                     SerialNumber = SelfRescuer.SelfRescueId;
                     Model = SelfRescuer.SelfRescueModel;
                     Location = SelfRescuer.SelfRescueCompany; // 使用厂家作为位置信息
@@ -114,11 +127,18 @@ namespace zjq.ViewModels
                     }
 
                     ExpiryDateText = $"过期日期: {expiryDate.ToString("yyyy-MM-dd")}";
+                    
+                    System.Diagnostics.Debug.WriteLine("SelfRescuer properties updated successfully");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"No self rescuer found with Id: {id}");
                 }
             }
             catch (System.Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading self rescuer details: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
             }
             finally
             {

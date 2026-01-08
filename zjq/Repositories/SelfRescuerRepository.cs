@@ -94,6 +94,8 @@ namespace zjq.Repositories
 
         public async Task<SelfRescuer> GetByIdAsync(int id)
         {
+            System.Diagnostics.Debug.WriteLine($"SelfRescuerRepository.GetByIdAsync called with id: {id}");
+            
             try
             {
                 using var connection = _dbService.GetConnection();
@@ -103,12 +105,16 @@ namespace zjq.Repositories
                 command.CommandText = "SELECT * FROM SelfRescuers WHERE Id = @Id";
                 command.Parameters.AddWithValue("@Id", id);
 
+                System.Diagnostics.Debug.WriteLine($"Executing query: {command.CommandText} with Id: {id}");
+
                 using var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
+                    System.Diagnostics.Debug.WriteLine("Record found, parsing...");
+                    
                     try
                     {
-                        return new SelfRescuer
+                        var rescuer = new SelfRescuer
                         {
                             Id = reader.GetInt32(0),
                             SelfRescueId = reader.GetString(1),
@@ -143,19 +149,28 @@ namespace zjq.Repositories
                             ManualOxygen = reader.IsDBNull(30) ? null : (float?)reader.GetDouble(30),
                             ManualOxygenTime = reader.IsDBNull(31) ? null : DateTime.Parse(reader.GetString(31))
                         };
+                        
+                        System.Diagnostics.Debug.WriteLine($"Successfully parsed self-rescuer record: Id={rescuer.Id}, SerialNumber={rescuer.SelfRescueId}, Model={rescuer.SelfRescueModel}");
+                        return rescuer;
                     }
                     catch (Exception ex)
                     {
                         // Log the error and return null
                         System.Diagnostics.Debug.WriteLine($"Error parsing self-rescuer record: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                         return null;
                     }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"No record found with Id: {id}");
                 }
             }
             catch (Exception ex)
             {
                 // Log the error and return null
                 System.Diagnostics.Debug.WriteLine($"Error getting self-rescuer by id: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
             }
 
             return null;

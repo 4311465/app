@@ -161,11 +161,24 @@ namespace zjq.ViewModels
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"SelfRescuerSelectedAsync called. SelectedSelfRescuer: {SelectedSelfRescuer}");
+                
                 if (SelectedSelfRescuer != null)
                 {
                     System.Diagnostics.Debug.WriteLine($"Navigating from ViewModel to detail page for SelfRescuerId: {SelectedSelfRescuer.Id}");
-                    await Shell.Current.GoToAsync($"//SelfRescuerDetailPage?Id={SelectedSelfRescuer.Id}");
+                    
+                    // 使用查询字符串格式传递参数，确保 QueryProperty 能正常工作
+            string route = $"/SelfRescuerDetailPage?Id={SelectedSelfRescuer.Id}";
+                    System.Diagnostics.Debug.WriteLine($"Navigation route: {route}");
+                    
+                    await Shell.Current.GoToAsync(route);
+                    
+                    System.Diagnostics.Debug.WriteLine("Navigation completed successfully");
                     SelectedSelfRescuer = null;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("SelectedSelfRescuer is null!");
                 }
             }
             catch (Exception ex)

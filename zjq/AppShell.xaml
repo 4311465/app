@@ -17,7 +17,7 @@
             Icon="dotnet_bot.png"
             ContentTemplate="{DataTemplate local:SelfRescuerListPage}"
             Route="SelfRescuerListPage" />
-             <ShellContent
+         <ShellContent
             Title="统计"
             Icon="dotnet_bot.png"
             ContentTemplate="{DataTemplate local:StatisticsPage}"
@@ -25,19 +25,15 @@
     </TabBar>
 
     <ShellContent
-        Title="自救器详情"
         ContentTemplate="{DataTemplate local:SelfRescuerDetailPage}"
         Route="SelfRescuerDetailPage" />
     <ShellContent
-        Title="添加自救器"
         ContentTemplate="{DataTemplate local:AddSelfRescuerPage}"
         Route="AddSelfRescuerPage" />
     <ShellContent
-        Title="维护记录"
         ContentTemplate="{DataTemplate local:MaintenanceRecordPage}"
         Route="MaintenanceRecordPage" />
     <ShellContent
-        Title="使用记录"
         ContentTemplate="{DataTemplate local:UsageRecordPage}"
         Route="UsageRecordPage" />
 
