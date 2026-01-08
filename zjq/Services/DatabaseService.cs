@@ -21,15 +21,10 @@ namespace zjq.Services
                 using var connection = new SqliteConnection($"Filename={_databasePath}");
                 connection.Open();
 
-                // 创建状态类型表
-                var statusTableCommand = connection.CreateCommand();
-                statusTableCommand.CommandText = @"
-                    CREATE TABLE IF NOT EXISTS StatusTypes (
-                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Name TEXT NOT NULL,
-                        Description TEXT
-                    )";
-                statusTableCommand.ExecuteNonQuery();
+                // 删除旧表（如果存在）以确保表结构是最新的
+                //var dropRescuerTableCommand = connection.CreateCommand();
+                //dropRescuerTableCommand.CommandText = "DROP TABLE IF EXISTS SelfRescuers";
+                //dropRescuerTableCommand.ExecuteNonQuery();
 
                 // 创建自救器表
                 var rescuerTableCommand = connection.CreateCommand();
