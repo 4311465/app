@@ -24,6 +24,17 @@
             Route="StatisticsPage" />
     </TabBar>
 
-
+    <ShellContent
+        ContentTemplate="{DataTemplate local:SelfRescuerDetailPage}"
+        Route="SelfRescuerDetailPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:AddSelfRescuerPage}"
+        Route="AddSelfRescuerPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:MaintenanceRecordPage}"
+        Route="MaintenanceRecordPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate local:UsageRecordPage}"
+        Route="UsageRecordPage" />
 
 </Shell>
