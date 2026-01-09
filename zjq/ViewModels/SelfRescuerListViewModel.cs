@@ -167,8 +167,9 @@ namespace zjq.ViewModels
                 {
                     System.Diagnostics.Debug.WriteLine($"Navigating from ViewModel to detail page for SelfRescuerId: {SelectedSelfRescuer.Id}");
                     
-                    // 使用查询字符串格式传递参数，确保 QueryProperty 能正常工作
-            string route = $"/SelfRescuerDetailPage?Id={SelectedSelfRescuer.Id}";
+                    // 构建包含参数的完整路由字符串，避免路由匹配歧义
+                    string route = $"{nameof(Views.SelfRescuerDetailPage)}?Id={SelectedSelfRescuer.Id}";
+                    
                     System.Diagnostics.Debug.WriteLine($"Navigation route: {route}");
                     
                     await Shell.Current.GoToAsync(route);

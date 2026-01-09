@@ -3,12 +3,12 @@ using zjq.ViewModels;
 
 namespace zjq.Views
 {
-    [QueryProperty(nameof(Id), "Id")]
+    [QueryProperty(nameof(SelfRescuerId), "Id")]
     public partial class SelfRescuerDetailPage : ContentPage
     {
         private readonly SelfRescuerDetailViewModel _viewModel;
 
-        public string Id { get; set; }
+        public string SelfRescuerId { get; set; }
 
         public SelfRescuerDetailPage(SelfRescuerDetailViewModel viewModel)
         {
@@ -23,17 +23,19 @@ namespace zjq.Views
             
             try
             {
-                System.Diagnostics.Debug.WriteLine($"Received navigation parameter: Id={Id}");
+                System.Diagnostics.Debug.WriteLine($"Received navigation parameter: Id={SelfRescuerId}");
                 
                 int id = 0;
-                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out id) && id > 0)
+                if (!string.IsNullOrEmpty(SelfRescuerId) && int.TryParse(SelfRescuerId, out id) && id > 0)
                 {
                     System.Diagnostics.Debug.WriteLine($"Extracted Id: {id}");
                     await _viewModel.LoadSelfRescuerAsync(id);
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"Invalid Id parameter: {Id}");
+                    System.Diagnostics.Debug.WriteLine($"Invalid Id parameter: {SelfRescuerId}");
+                    // 使用 QueryProperty 属性已经足够获取参数
+                    // 不再需要尝试从 route parameter 中获取
                 }
             }
             catch (Exception ex)

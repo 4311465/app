@@ -66,6 +66,17 @@ namespace zjq.ViewModels
                     return;
                 }
                 
+                // 重置属性值
+                SerialNumber = string.Empty;
+                Model = string.Empty;
+                Location = string.Empty;
+                StatusName = string.Empty;
+                ExpiryDateText = string.Empty;
+                Company = string.Empty;
+                SafeCode = string.Empty;
+                ValidDate = string.Empty;
+                DeviceType = string.Empty;
+                
                 SelfRescuer = await _selfRescuerService.GetSelfRescuerByIdAsync(id);
                 
                 System.Diagnostics.Debug.WriteLine($"Loaded self rescuer: {SelfRescuer}");
