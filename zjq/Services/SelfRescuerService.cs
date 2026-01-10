@@ -527,7 +527,7 @@ namespace zjq.Services
                         isExpired = rescuer.SelfRescueValidEnd.Value < today;
                     }
                     // 否则尝试从 SelfRescueId 解析出厂日期
-                    else if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
+                    if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
                     {
                         try
                         {

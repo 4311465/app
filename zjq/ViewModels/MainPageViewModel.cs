@@ -100,7 +100,7 @@ namespace zjq.ViewModels
                         {
                             expiryDateText = rescuer.SelfRescueValidEnd.Value.ToString("yyyy-MM-dd");
                         }
-                        else if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
+                       if (!string.IsNullOrWhiteSpace(rescuer.SelfRescueId) && rescuer.SelfRescueId.Length >= 8)
                         {
                             try
                             {

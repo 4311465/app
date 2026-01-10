@@ -55,32 +55,13 @@ namespace zjq.ViewModels
                 {
                     try
                     {
-                        // 确定状态名称
-                        string statusName = "正常";
-                        
-                        // 检查是否过期
-                        if (r.SelfRescueValidEnd.HasValue && r.SelfRescueValidEnd.Value < DateTime.Now)
-                        {
-                            statusName = "过期";
-                        }
-                        // 检查是否临期
-                        else if (r.CheckTime.HasValue)
-                        {
-                            var currentDate = DateTime.Now;
-                            if ((r.DeviceType == 1 && r.CheckTime.Value.AddDays(160) <= currentDate && r.CheckTime.Value.AddDays(180) >= currentDate) ||
-                                (r.DeviceType == 0 && r.CheckTime.Value.AddDays(80) <= currentDate && r.CheckTime.Value.AddDays(90) >= currentDate))
-                            {
-                                statusName = "临期";
-                            }
-                        }
-                        
-                        // 计算过期日期
-                        DateTime expiryDate = DateTime.Now.AddYears(3);
-                        if (r.SelfRescueValidEnd.HasValue)
-                        {
-                            expiryDate = r.SelfRescueValidEnd.Value;
-                        }
-                        else if (!string.IsNullOrWhiteSpace(r.SelfRescueId) && r.SelfRescueId.Length >= 8)
+
+                        // 1. Calculate Expiration Date
+                        DateTime expiryDate = DateTime.Now.AddYears(3); // Default fallback
+                        DateTime? idExpiryDate = null;
+
+                        // Try parsing from ID first
+                        if (!string.IsNullOrWhiteSpace(r.SelfRescueId) && r.SelfRescueId.Length >= 8)
                         {
                             try
                             {
@@ -89,13 +70,52 @@ namespace zjq.ViewModels
                                 {
                                     if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
                                     {
-                                        expiryDate = parsedDate.AddYears(3);
+                                        idExpiryDate = parsedDate.AddYears(3);
+                                        // If ValidEnd is null, use ID date as the primary expiry date for display
+                                        if (!r.SelfRescueValidEnd.HasValue)
+                                        {
+                                            expiryDate = idExpiryDate.Value;
+                                        }
                                     }
                                 }
                             }
                             catch
                             {
-                                // 解析失败，保持默认值
+                                // Ignore parsing errors
+                            }
+                        }
+
+                        // If ValidEnd exists, it usually takes precedence for display, unless we want to show the *earliest*?
+                        // Existing logic preferred ValidEnd. Let's keep ValidEnd as the primary "ExpiryDate" if present.
+                        if (r.SelfRescueValidEnd.HasValue)
+                        {
+                            expiryDate = r.SelfRescueValidEnd.Value;
+                        }
+
+                        // 2. Determine Status
+                        string statusName = "正常";
+
+                        // Check Expired (ValidEnd < Now OR IdExpiry < Now)
+                        bool isExpiredByValidEnd = r.SelfRescueValidEnd.HasValue && r.SelfRescueValidEnd.Value < DateTime.Now;
+                        bool isExpiredById = idExpiryDate.HasValue && idExpiryDate.Value < DateTime.Now;
+
+                        if (isExpiredByValidEnd || isExpiredById)
+                        {
+                            statusName = "过期";
+                            // Ideally show the date that caused expiration if different? 
+                            // For now keeping `expiryDate` logic as "ValidEnd > IdDate > Default". 
+                            // But correctness might suggest showing the *actual* expired date.
+                            // If expired by ID but ValidEnd is future (unlikely but possible if data conflict), showing ValidEnd might be confusing if status is "Expired".
+                            // Let's stick to the user's specific request about the *logic*. display date is secondary.
+                        }
+                        // Check Near Expiry
+                        else if (r.CheckTime.HasValue)
+                        {
+                            var currentDate = DateTime.Now;
+                            if ((r.DeviceType == 1 && r.CheckTime.Value.AddDays(160) <= currentDate && r.CheckTime.Value.AddDays(180) >= currentDate) ||
+                                (r.DeviceType == 0 && r.CheckTime.Value.AddDays(80) <= currentDate && r.CheckTime.Value.AddDays(90) >= currentDate))
+                            {
+                                statusName = "临期";
                             }
                         }
                         
