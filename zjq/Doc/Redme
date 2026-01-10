@@ -1,0 +1,2 @@
+adb exec-out run-as zjq cat /data/data/zjq/files/self_rescuer.db > self_rescuer.db  //直接从电脑里面拷贝数据库到电脑
+adb shell "run-as com.companyname.zjq"  执行命令
